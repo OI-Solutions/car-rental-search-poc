@@ -1,0 +1,9 @@
+{
+  "query": {
+    "bool": {
+      "filter": [{ "term": { "dealership_id": "DLR-CHI" } }]
+    }
+  },
+  "sort": [{ "customer_id": "asc" }],
+  "size": 50
+}

@@ -1,0 +1,86 @@
+[
+  {
+    "customer_id": "CUS-001",
+    "company_name": "Prairie Electric Services",
+    "industry": "electrical_contractor",
+    "home_city": "Chicago",
+    "account_status": "active"
+  },
+  {
+    "customer_id": "CUS-002",
+    "company_name": "Northline HVAC Group",
+    "industry": "hvac",
+    "home_city": "Schaumburg",
+    "account_status": "active"
+  },
+  {
+    "customer_id": "CUS-003",
+    "company_name": "Lakeview Medical Couriers",
+    "industry": "medical_logistics",
+    "home_city": "Chicago",
+    "account_status": "active"
+  },
+  {
+    "customer_id": "CUS-004",
+    "company_name": "Midwest Site Surveyors",
+    "industry": "engineering",
+    "home_city": "Naperville",
+    "account_status": "active"
+  },
+  {
+    "customer_id": "CUS-005",
+    "company_name": "Joliet Restoration Partners",
+    "industry": "construction",
+    "home_city": "Joliet",
+    "account_status": "active"
+  },
+  {
+    "customer_id": "CUS-006",
+    "company_name": "Fox Valley Catering",
+    "industry": "hospitality",
+    "home_city": "Aurora",
+    "account_status": "active"
+  },
+  {
+    "customer_id": "CUS-007",
+    "company_name": "Metro Fiber Installers",
+    "industry": "telecommunications",
+    "home_city": "Plainfield",
+    "account_status": "active"
+  },
+  {
+    "customer_id": "CUS-008",
+    "company_name": "CivicWorks Consulting",
+    "industry": "professional_services",
+    "home_city": "Oak Park",
+    "account_status": "active"
+  },
+  {
+    "customer_id": "CUS-009",
+    "company_name": "Great Lakes Property Care",
+    "industry": "property_management",
+    "home_city": "Evanston",
+    "account_status": "active"
+  },
+  {
+    "customer_id": "CUS-010",
+    "company_name": "TriCounty Event Logistics",
+    "industry": "events",
+    "home_city": "Bolingbrook",
+    "account_status": "active"
+  },
+  {
+    "customer_id": "CUS-011",
+    "company_name": "Illinois Water Systems",
+    "industry": "utilities",
+    "home_city": "Naperville",
+    "account_status": "active"
+  },
+  {
+    "customer_id": "CUS-012",
+    "company_name": "Summit Security Operations",
+    "industry": "security_services",
+    "home_city": "Schaumburg",
+    "account_status": "inactive"
+  }
+]

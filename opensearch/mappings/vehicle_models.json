@@ -1,0 +1,26 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0
+  },
+  "mappings": {
+    "dynamic": "strict",
+    "properties": {
+      "vehicle_model_id": { "type": "keyword" },
+      "make": {
+        "type": "keyword",
+        "fields": { "text": { "type": "text" } }
+      },
+      "model": {
+        "type": "keyword",
+        "fields": { "text": { "type": "text" } }
+      },
+      "vehicle_class": { "type": "keyword" },
+      "seats": { "type": "integer" },
+      "cargo_capacity": { "type": "keyword" },
+      "transmission": { "type": "keyword" },
+      "fuel_type": { "type": "keyword" },
+      "description": { "type": "text" }
+    }
+  }
+}

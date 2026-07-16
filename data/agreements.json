@@ -1,0 +1,362 @@
+[
+  {
+    "agreement_id": "AGR-001",
+    "customer_id": "CUS-001",
+    "dealership_id": "DLR-CHI",
+    "vehicle_class": null,
+    "discount_percent": 28.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-002",
+    "customer_id": "CUS-001",
+    "dealership_id": "DLR-PLN",
+    "vehicle_class": null,
+    "discount_percent": 5.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-003",
+    "customer_id": "CUS-001",
+    "dealership_id": "DLR-NAP",
+    "vehicle_class": "suv",
+    "discount_percent": 12.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-004",
+    "customer_id": "CUS-001",
+    "dealership_id": "DLR-JOL",
+    "vehicle_class": "pickup_truck",
+    "discount_percent": 18.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-005",
+    "customer_id": "CUS-002",
+    "dealership_id": "DLR-SCH",
+    "vehicle_class": null,
+    "discount_percent": 24.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-006",
+    "customer_id": "CUS-002",
+    "dealership_id": "DLR-CHI",
+    "vehicle_class": "midsize_sedan",
+    "discount_percent": 10.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-007",
+    "customer_id": "CUS-002",
+    "dealership_id": "DLR-NAP",
+    "vehicle_class": null,
+    "discount_percent": 8.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-008",
+    "customer_id": "CUS-003",
+    "dealership_id": "DLR-CHI",
+    "vehicle_class": "compact_sedan",
+    "discount_percent": 22.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-009",
+    "customer_id": "CUS-003",
+    "dealership_id": "DLR-SCH",
+    "vehicle_class": null,
+    "discount_percent": 7.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-010",
+    "customer_id": "CUS-004",
+    "dealership_id": "DLR-NAP",
+    "vehicle_class": null,
+    "discount_percent": 21.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-011",
+    "customer_id": "CUS-004",
+    "dealership_id": "DLR-PLN",
+    "vehicle_class": "suv",
+    "discount_percent": 8.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-012",
+    "customer_id": "CUS-004",
+    "dealership_id": "DLR-JOL",
+    "vehicle_class": null,
+    "discount_percent": 4.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-013",
+    "customer_id": "CUS-005",
+    "dealership_id": "DLR-JOL",
+    "vehicle_class": null,
+    "discount_percent": 26.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-014",
+    "customer_id": "CUS-005",
+    "dealership_id": "DLR-PLN",
+    "vehicle_class": "pickup_truck",
+    "discount_percent": 10.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-015",
+    "customer_id": "CUS-005",
+    "dealership_id": "DLR-NAP",
+    "vehicle_class": null,
+    "discount_percent": 6.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-016",
+    "customer_id": "CUS-006",
+    "dealership_id": "DLR-PLN",
+    "vehicle_class": "cargo_van",
+    "discount_percent": 18.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-017",
+    "customer_id": "CUS-006",
+    "dealership_id": "DLR-NAP",
+    "vehicle_class": null,
+    "discount_percent": 11.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-018",
+    "customer_id": "CUS-006",
+    "dealership_id": "DLR-CHI",
+    "vehicle_class": "midsize_sedan",
+    "discount_percent": 5.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-019",
+    "customer_id": "CUS-007",
+    "dealership_id": "DLR-PLN",
+    "vehicle_class": null,
+    "discount_percent": 25.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-020",
+    "customer_id": "CUS-007",
+    "dealership_id": "DLR-JOL",
+    "vehicle_class": "pickup_truck",
+    "discount_percent": 15.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-021",
+    "customer_id": "CUS-007",
+    "dealership_id": "DLR-CHI",
+    "vehicle_class": null,
+    "discount_percent": 6.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-022",
+    "customer_id": "CUS-007",
+    "dealership_id": "DLR-NAP",
+    "vehicle_class": "cargo_van",
+    "discount_percent": 9.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-023",
+    "customer_id": "CUS-008",
+    "dealership_id": "DLR-CHI",
+    "vehicle_class": null,
+    "discount_percent": 14.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-024",
+    "customer_id": "CUS-008",
+    "dealership_id": "DLR-SCH",
+    "vehicle_class": "midsize_sedan",
+    "discount_percent": 16.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-025",
+    "customer_id": "CUS-009",
+    "dealership_id": "DLR-SCH",
+    "vehicle_class": null,
+    "discount_percent": 20.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-026",
+    "customer_id": "CUS-009",
+    "dealership_id": "DLR-CHI",
+    "vehicle_class": "suv",
+    "discount_percent": 9.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-027",
+    "customer_id": "CUS-009",
+    "dealership_id": "DLR-NAP",
+    "vehicle_class": null,
+    "discount_percent": 7.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-028",
+    "customer_id": "CUS-010",
+    "dealership_id": "DLR-JOL",
+    "vehicle_class": "cargo_van",
+    "discount_percent": 23.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-029",
+    "customer_id": "CUS-010",
+    "dealership_id": "DLR-PLN",
+    "vehicle_class": null,
+    "discount_percent": 12.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-030",
+    "customer_id": "CUS-010",
+    "dealership_id": "DLR-CHI",
+    "vehicle_class": null,
+    "discount_percent": 5.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-031",
+    "customer_id": "CUS-011",
+    "dealership_id": "DLR-NAP",
+    "vehicle_class": null,
+    "discount_percent": 19.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-032",
+    "customer_id": "CUS-011",
+    "dealership_id": "DLR-JOL",
+    "vehicle_class": "pickup_truck",
+    "discount_percent": 13.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-033",
+    "customer_id": "CUS-011",
+    "dealership_id": "DLR-SCH",
+    "vehicle_class": null,
+    "discount_percent": 6.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-034",
+    "customer_id": "CUS-011",
+    "dealership_id": "DLR-PLN",
+    "vehicle_class": "compact_sedan",
+    "discount_percent": 8.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "active"
+  },
+  {
+    "agreement_id": "AGR-035",
+    "customer_id": "CUS-012",
+    "dealership_id": "DLR-SCH",
+    "vehicle_class": null,
+    "discount_percent": 10.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "inactive"
+  },
+  {
+    "agreement_id": "AGR-036",
+    "customer_id": "CUS-012",
+    "dealership_id": "DLR-CHI",
+    "vehicle_class": null,
+    "discount_percent": 4.0,
+    "valid_from": "2026-01-01",
+    "valid_to": "2026-12-31",
+    "agreement_status": "inactive"
+  }
+]

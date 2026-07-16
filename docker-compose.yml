@@ -1,0 +1,81 @@
+# =============================================================================
+# LOCAL DEVELOPMENT ONLY — B2B Car-Rental Search POC
+# -----------------------------------------------------------------------------
+# Single-node OpenSearch + Dashboards for local experimentation.
+# The security plugin is enabled but uses the bundled demo certificate and a
+# single admin user sourced from `.env`. This configuration is NOT hardened and
+# must never be exposed to a network or used in production.
+# =============================================================================
+
+services:
+  opensearch:
+    image: opensearchproject/opensearch:2.19.1
+    container_name: crs-opensearch
+    environment:
+      - cluster.name=crs-poc-cluster
+      - node.name=crs-node-1
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms${OS_HEAP:-512m} -Xmx${OS_HEAP:-512m}"
+      # Security plugin stays ENABLED. Admin password comes from .env.
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_INITIAL_ADMIN_PASSWORD}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    ports:
+      - "${OPENSEARCH_PORT:-9200}:9200"   # REST API
+      - "9600:9600"                       # performance analyzer
+    healthcheck:
+      # -k because the demo cert is self-signed (local dev only).
+      test:
+        [
+          "CMD-SHELL",
+          "curl -sk -u admin:${OPENSEARCH_INITIAL_ADMIN_PASSWORD} https://localhost:9200/_cluster/health | grep -qE '\"status\":\"(green|yellow)\"'",
+        ]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
+    networks:
+      - crs-net
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.19.1
+    container_name: crs-dashboards
+    depends_on:
+      opensearch:
+        condition: service_healthy
+    ports:
+      - "${DASHBOARDS_PORT:-5601}:5601"
+    environment:
+      - OPENSEARCH_HOSTS=https://opensearch:9200
+      - OPENSEARCH_SSL_VERIFICATIONMODE=none
+      - OPENSEARCH_USERNAME=${OPENSEARCH_USERNAME:-admin}
+      - OPENSEARCH_PASSWORD=${OPENSEARCH_PASSWORD}
+    healthcheck:
+      # /api/status requires auth under the security plugin, so pass credentials.
+      test:
+        [
+          "CMD-SHELL",
+          "curl -sf -u ${OPENSEARCH_USERNAME:-admin}:${OPENSEARCH_PASSWORD} http://localhost:5601/api/status | grep -q '\"state\":\"green\"'",
+        ]
+      interval: 20s
+      timeout: 10s
+      retries: 15
+      start_period: 120s
+    networks:
+      - crs-net
+
+volumes:
+  opensearch-data:
+    driver: local
+
+networks:
+  crs-net:
+    driver: bridge

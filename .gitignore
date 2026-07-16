@@ -1,0 +1,18 @@
+# Local secrets / config — never commit
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Node / app layer
+node_modules/
+dist/
+*.tsbuildinfo
+.vite/
+
+# OS cruft
+.DS_Store

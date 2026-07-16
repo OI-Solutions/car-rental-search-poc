@@ -1,0 +1,8 @@
+{
+  "query": {
+    "bool": {
+      "filter": [{ "term": { "dealership_city": "Chicago" } }]
+    }
+  },
+  "size": 50
+}

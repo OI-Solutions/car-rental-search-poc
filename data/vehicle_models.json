@@ -1,0 +1,57 @@
+[
+  {
+    "vehicle_model_id": "VM-COMPACT",
+    "make": "Toyota",
+    "model": "Corolla",
+    "vehicle_class": "compact_sedan",
+    "seats": 5,
+    "cargo_capacity": "13.1 cu ft",
+    "transmission": "automatic",
+    "fuel_type": "gasoline",
+    "description": "Fuel-efficient compact sedan for local business travel and light-duty assignments."
+  },
+  {
+    "vehicle_model_id": "VM-MIDSIZE",
+    "make": "Honda",
+    "model": "Accord",
+    "vehicle_class": "midsize_sedan",
+    "seats": 5,
+    "cargo_capacity": "16.7 cu ft",
+    "transmission": "automatic",
+    "fuel_type": "gasoline",
+    "description": "Comfortable midsize sedan suited for client visits, regional travel, and daily field work."
+  },
+  {
+    "vehicle_model_id": "VM-SUV",
+    "make": "Ford",
+    "model": "Explorer",
+    "vehicle_class": "suv",
+    "seats": 7,
+    "cargo_capacity": "87.8 cu ft",
+    "transmission": "automatic",
+    "fuel_type": "gasoline",
+    "description": "Three-row SUV for crews, mixed terrain, and jobs requiring passenger and cargo flexibility."
+  },
+  {
+    "vehicle_model_id": "VM-PICKUP",
+    "make": "Ford",
+    "model": "F-150",
+    "vehicle_class": "pickup_truck",
+    "seats": 5,
+    "cargo_capacity": "5.5 ft bed",
+    "transmission": "automatic",
+    "fuel_type": "gasoline",
+    "description": "Full-size pickup truck for tools, equipment, jobsite travel, and light towing."
+  },
+  {
+    "vehicle_model_id": "VM-CARGO",
+    "make": "Ram",
+    "model": "ProMaster 2500",
+    "vehicle_class": "cargo_van",
+    "seats": 2,
+    "cargo_capacity": "420 cu ft",
+    "transmission": "automatic",
+    "fuel_type": "gasoline",
+    "description": "High-roof cargo van for deliveries, service equipment, and mobile operations."
+  }
+]

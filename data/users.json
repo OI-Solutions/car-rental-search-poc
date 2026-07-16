@@ -1,0 +1,154 @@
+[
+  {
+    "user_id": "USR-001-C",
+    "email": "prairie.electric.services@example.test",
+    "role": "customer_user",
+    "customer_id": "CUS-001",
+    "dealership_id": null,
+    "status": "active"
+  },
+  {
+    "user_id": "USR-002-C",
+    "email": "northline.hvac.group@example.test",
+    "role": "customer_user",
+    "customer_id": "CUS-002",
+    "dealership_id": null,
+    "status": "active"
+  },
+  {
+    "user_id": "USR-003-C",
+    "email": "lakeview.medical.couriers@example.test",
+    "role": "customer_user",
+    "customer_id": "CUS-003",
+    "dealership_id": null,
+    "status": "active"
+  },
+  {
+    "user_id": "USR-004-C",
+    "email": "midwest.site.surveyors@example.test",
+    "role": "customer_user",
+    "customer_id": "CUS-004",
+    "dealership_id": null,
+    "status": "active"
+  },
+  {
+    "user_id": "USR-005-C",
+    "email": "joliet.restoration.partners@example.test",
+    "role": "customer_user",
+    "customer_id": "CUS-005",
+    "dealership_id": null,
+    "status": "active"
+  },
+  {
+    "user_id": "USR-006-C",
+    "email": "fox.valley.catering@example.test",
+    "role": "customer_user",
+    "customer_id": "CUS-006",
+    "dealership_id": null,
+    "status": "active"
+  },
+  {
+    "user_id": "USR-007-C",
+    "email": "metro.fiber.installers@example.test",
+    "role": "customer_user",
+    "customer_id": "CUS-007",
+    "dealership_id": null,
+    "status": "active"
+  },
+  {
+    "user_id": "USR-008-C",
+    "email": "civicworks.consulting@example.test",
+    "role": "customer_user",
+    "customer_id": "CUS-008",
+    "dealership_id": null,
+    "status": "active"
+  },
+  {
+    "user_id": "USR-009-C",
+    "email": "great.lakes.property.care@example.test",
+    "role": "customer_user",
+    "customer_id": "CUS-009",
+    "dealership_id": null,
+    "status": "active"
+  },
+  {
+    "user_id": "USR-010-C",
+    "email": "tricounty.event.logistics@example.test",
+    "role": "customer_user",
+    "customer_id": "CUS-010",
+    "dealership_id": null,
+    "status": "active"
+  },
+  {
+    "user_id": "USR-011-C",
+    "email": "illinois.water.systems@example.test",
+    "role": "customer_user",
+    "customer_id": "CUS-011",
+    "dealership_id": null,
+    "status": "active"
+  },
+  {
+    "user_id": "USR-012-C",
+    "email": "summit.security.operations@example.test",
+    "role": "customer_user",
+    "customer_id": "CUS-012",
+    "dealership_id": null,
+    "status": "inactive"
+  },
+  {
+    "user_id": "USR-CHI-D",
+    "email": "manager.chicago@example.test",
+    "role": "dealership_user",
+    "customer_id": null,
+    "dealership_id": "DLR-CHI",
+    "status": "active"
+  },
+  {
+    "user_id": "USR-PLN-D",
+    "email": "manager.plainfield@example.test",
+    "role": "dealership_user",
+    "customer_id": null,
+    "dealership_id": "DLR-PLN",
+    "status": "active"
+  },
+  {
+    "user_id": "USR-NAP-D",
+    "email": "manager.naperville@example.test",
+    "role": "dealership_user",
+    "customer_id": null,
+    "dealership_id": "DLR-NAP",
+    "status": "active"
+  },
+  {
+    "user_id": "USR-JOL-D",
+    "email": "manager.joliet@example.test",
+    "role": "dealership_user",
+    "customer_id": null,
+    "dealership_id": "DLR-JOL",
+    "status": "active"
+  },
+  {
+    "user_id": "USR-SCH-D",
+    "email": "manager.schaumburg@example.test",
+    "role": "dealership_user",
+    "customer_id": null,
+    "dealership_id": "DLR-SCH",
+    "status": "active"
+  },
+  {
+    "user_id": "USR-CORP-001",
+    "email": "admin@corporate.example.test",
+    "role": "corporate_admin",
+    "customer_id": null,
+    "dealership_id": null,
+    "status": "active"
+  },
+  {
+    "user_id": "USR-CORP-002",
+    "email": "analyst@corporate.example.test",
+    "role": "corporate_admin",
+    "customer_id": null,
+    "dealership_id": null,
+    "status": "active"
+  }
+]

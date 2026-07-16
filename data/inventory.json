@@ -1,0 +1,452 @@
+[
+  {
+    "inventory_id": "INV-CHI-COMPACT-01",
+    "dealership_id": "DLR-CHI",
+    "vehicle_model_id": "VM-COMPACT",
+    "quantity_available": 2,
+    "base_daily_rate": 55.0,
+    "status": "limited",
+    "last_updated": "2026-07-05T11:00:00Z"
+  },
+  {
+    "inventory_id": "INV-CHI-COMPACT-02",
+    "dealership_id": "DLR-CHI",
+    "vehicle_model_id": "VM-COMPACT",
+    "quantity_available": 3,
+    "base_daily_rate": 58.0,
+    "status": "available",
+    "last_updated": "2026-07-11T16:00:00Z"
+  },
+  {
+    "inventory_id": "INV-CHI-MIDSIZE-01",
+    "dealership_id": "DLR-CHI",
+    "vehicle_model_id": "VM-MIDSIZE",
+    "quantity_available": 2,
+    "base_daily_rate": 68.0,
+    "status": "available",
+    "last_updated": "2026-07-01T08:00:00Z"
+  },
+  {
+    "inventory_id": "INV-CHI-MIDSIZE-02",
+    "dealership_id": "DLR-CHI",
+    "vehicle_model_id": "VM-MIDSIZE",
+    "quantity_available": 4,
+    "base_daily_rate": 70.0,
+    "status": "available",
+    "last_updated": "2026-07-10T08:00:00Z"
+  },
+  {
+    "inventory_id": "INV-CHI-SUV-01",
+    "dealership_id": "DLR-CHI",
+    "vehicle_model_id": "VM-SUV",
+    "quantity_available": 4,
+    "base_daily_rate": 92.0,
+    "status": "available",
+    "last_updated": "2026-07-12T16:00:00Z"
+  },
+  {
+    "inventory_id": "INV-CHI-SUV-02",
+    "dealership_id": "DLR-CHI",
+    "vehicle_model_id": "VM-SUV",
+    "quantity_available": 4,
+    "base_daily_rate": 97.0,
+    "status": "available",
+    "last_updated": "2026-07-05T08:00:00Z"
+  },
+  {
+    "inventory_id": "INV-CHI-PICKUP-01",
+    "dealership_id": "DLR-CHI",
+    "vehicle_model_id": "VM-PICKUP",
+    "quantity_available": 3,
+    "base_daily_rate": 105.0,
+    "status": "available",
+    "last_updated": "2026-07-06T12:00:00Z"
+  },
+  {
+    "inventory_id": "INV-CHI-PICKUP-02",
+    "dealership_id": "DLR-CHI",
+    "vehicle_model_id": "VM-PICKUP",
+    "quantity_available": 4,
+    "base_daily_rate": 108.0,
+    "status": "available",
+    "last_updated": "2026-07-06T09:00:00Z"
+  },
+  {
+    "inventory_id": "INV-CHI-CARGO-01",
+    "dealership_id": "DLR-CHI",
+    "vehicle_model_id": "VM-CARGO",
+    "quantity_available": 2,
+    "base_daily_rate": 118.0,
+    "status": "available",
+    "last_updated": "2026-07-06T13:00:00Z"
+  },
+  {
+    "inventory_id": "INV-CHI-CARGO-02",
+    "dealership_id": "DLR-CHI",
+    "vehicle_model_id": "VM-CARGO",
+    "quantity_available": 1,
+    "base_daily_rate": 122.0,
+    "status": "available",
+    "last_updated": "2026-07-09T09:00:00Z"
+  },
+  {
+    "inventory_id": "INV-PLN-COMPACT-01",
+    "dealership_id": "DLR-PLN",
+    "vehicle_model_id": "VM-COMPACT",
+    "quantity_available": 7,
+    "base_daily_rate": 49.0,
+    "status": "limited",
+    "last_updated": "2026-07-05T18:00:00Z"
+  },
+  {
+    "inventory_id": "INV-PLN-COMPACT-02",
+    "dealership_id": "DLR-PLN",
+    "vehicle_model_id": "VM-COMPACT",
+    "quantity_available": 4,
+    "base_daily_rate": 53.0,
+    "status": "available",
+    "last_updated": "2026-07-01T18:00:00Z"
+  },
+  {
+    "inventory_id": "INV-PLN-MIDSIZE-01",
+    "dealership_id": "DLR-PLN",
+    "vehicle_model_id": "VM-MIDSIZE",
+    "quantity_available": 4,
+    "base_daily_rate": 64.0,
+    "status": "available",
+    "last_updated": "2026-07-02T11:00:00Z"
+  },
+  {
+    "inventory_id": "INV-PLN-MIDSIZE-02",
+    "dealership_id": "DLR-PLN",
+    "vehicle_model_id": "VM-MIDSIZE",
+    "quantity_available": 7,
+    "base_daily_rate": 66.0,
+    "status": "available",
+    "last_updated": "2026-07-11T13:00:00Z"
+  },
+  {
+    "inventory_id": "INV-PLN-SUV-01",
+    "dealership_id": "DLR-PLN",
+    "vehicle_model_id": "VM-SUV",
+    "quantity_available": 3,
+    "base_daily_rate": 88.0,
+    "status": "available",
+    "last_updated": "2026-07-04T18:00:00Z"
+  },
+  {
+    "inventory_id": "INV-PLN-SUV-02",
+    "dealership_id": "DLR-PLN",
+    "vehicle_model_id": "VM-SUV",
+    "quantity_available": 2,
+    "base_daily_rate": 92.0,
+    "status": "available",
+    "last_updated": "2026-07-03T16:00:00Z"
+  },
+  {
+    "inventory_id": "INV-PLN-PICKUP-01",
+    "dealership_id": "DLR-PLN",
+    "vehicle_model_id": "VM-PICKUP",
+    "quantity_available": 4,
+    "base_daily_rate": 99.0,
+    "status": "available",
+    "last_updated": "2026-07-07T12:00:00Z"
+  },
+  {
+    "inventory_id": "INV-PLN-PICKUP-02",
+    "dealership_id": "DLR-PLN",
+    "vehicle_model_id": "VM-PICKUP",
+    "quantity_available": 6,
+    "base_daily_rate": 102.0,
+    "status": "available",
+    "last_updated": "2026-07-13T08:00:00Z"
+  },
+  {
+    "inventory_id": "INV-PLN-CARGO-01",
+    "dealership_id": "DLR-PLN",
+    "vehicle_model_id": "VM-CARGO",
+    "quantity_available": 4,
+    "base_daily_rate": 110.0,
+    "status": "available",
+    "last_updated": "2026-07-13T13:00:00Z"
+  },
+  {
+    "inventory_id": "INV-PLN-CARGO-02",
+    "dealership_id": "DLR-PLN",
+    "vehicle_model_id": "VM-CARGO",
+    "quantity_available": 5,
+    "base_daily_rate": 115.0,
+    "status": "limited",
+    "last_updated": "2026-07-10T13:00:00Z"
+  },
+  {
+    "inventory_id": "INV-NAP-COMPACT-01",
+    "dealership_id": "DLR-NAP",
+    "vehicle_model_id": "VM-COMPACT",
+    "quantity_available": 4,
+    "base_daily_rate": 52.0,
+    "status": "available",
+    "last_updated": "2026-07-07T18:00:00Z"
+  },
+  {
+    "inventory_id": "INV-NAP-COMPACT-02",
+    "dealership_id": "DLR-NAP",
+    "vehicle_model_id": "VM-COMPACT",
+    "quantity_available": 3,
+    "base_daily_rate": 57.0,
+    "status": "available",
+    "last_updated": "2026-07-04T16:00:00Z"
+  },
+  {
+    "inventory_id": "INV-NAP-MIDSIZE-01",
+    "dealership_id": "DLR-NAP",
+    "vehicle_model_id": "VM-MIDSIZE",
+    "quantity_available": 5,
+    "base_daily_rate": 66.0,
+    "status": "available",
+    "last_updated": "2026-07-07T17:00:00Z"
+  },
+  {
+    "inventory_id": "INV-NAP-MIDSIZE-02",
+    "dealership_id": "DLR-NAP",
+    "vehicle_model_id": "VM-MIDSIZE",
+    "quantity_available": 6,
+    "base_daily_rate": 71.0,
+    "status": "available",
+    "last_updated": "2026-07-03T16:00:00Z"
+  },
+  {
+    "inventory_id": "INV-NAP-SUV-01",
+    "dealership_id": "DLR-NAP",
+    "vehicle_model_id": "VM-SUV",
+    "quantity_available": 8,
+    "base_daily_rate": 90.0,
+    "status": "limited",
+    "last_updated": "2026-07-01T09:00:00Z"
+  },
+  {
+    "inventory_id": "INV-NAP-SUV-02",
+    "dealership_id": "DLR-NAP",
+    "vehicle_model_id": "VM-SUV",
+    "quantity_available": 3,
+    "base_daily_rate": 93.0,
+    "status": "available",
+    "last_updated": "2026-07-07T17:00:00Z"
+  },
+  {
+    "inventory_id": "INV-NAP-PICKUP-01",
+    "dealership_id": "DLR-NAP",
+    "vehicle_model_id": "VM-PICKUP",
+    "quantity_available": 2,
+    "base_daily_rate": 103.0,
+    "status": "available",
+    "last_updated": "2026-07-10T15:00:00Z"
+  },
+  {
+    "inventory_id": "INV-NAP-PICKUP-02",
+    "dealership_id": "DLR-NAP",
+    "vehicle_model_id": "VM-PICKUP",
+    "quantity_available": 1,
+    "base_daily_rate": 107.0,
+    "status": "available",
+    "last_updated": "2026-07-02T18:00:00Z"
+  },
+  {
+    "inventory_id": "INV-NAP-CARGO-01",
+    "dealership_id": "DLR-NAP",
+    "vehicle_model_id": "VM-CARGO",
+    "quantity_available": 5,
+    "base_daily_rate": 114.0,
+    "status": "available",
+    "last_updated": "2026-07-06T09:00:00Z"
+  },
+  {
+    "inventory_id": "INV-NAP-CARGO-02",
+    "dealership_id": "DLR-NAP",
+    "vehicle_model_id": "VM-CARGO",
+    "quantity_available": 7,
+    "base_daily_rate": 118.0,
+    "status": "available",
+    "last_updated": "2026-07-01T12:00:00Z"
+  },
+  {
+    "inventory_id": "INV-JOL-COMPACT-01",
+    "dealership_id": "DLR-JOL",
+    "vehicle_model_id": "VM-COMPACT",
+    "quantity_available": 3,
+    "base_daily_rate": 47.0,
+    "status": "available",
+    "last_updated": "2026-07-02T18:00:00Z"
+  },
+  {
+    "inventory_id": "INV-JOL-COMPACT-02",
+    "dealership_id": "DLR-JOL",
+    "vehicle_model_id": "VM-COMPACT",
+    "quantity_available": 4,
+    "base_daily_rate": 51.0,
+    "status": "available",
+    "last_updated": "2026-07-13T10:00:00Z"
+  },
+  {
+    "inventory_id": "INV-JOL-MIDSIZE-01",
+    "dealership_id": "DLR-JOL",
+    "vehicle_model_id": "VM-MIDSIZE",
+    "quantity_available": 1,
+    "base_daily_rate": 61.0,
+    "status": "available",
+    "last_updated": "2026-07-08T08:00:00Z"
+  },
+  {
+    "inventory_id": "INV-JOL-MIDSIZE-02",
+    "dealership_id": "DLR-JOL",
+    "vehicle_model_id": "VM-MIDSIZE",
+    "quantity_available": 6,
+    "base_daily_rate": 63.0,
+    "status": "available",
+    "last_updated": "2026-07-14T12:00:00Z"
+  },
+  {
+    "inventory_id": "INV-JOL-SUV-01",
+    "dealership_id": "DLR-JOL",
+    "vehicle_model_id": "VM-SUV",
+    "quantity_available": 4,
+    "base_daily_rate": 84.0,
+    "status": "limited",
+    "last_updated": "2026-07-10T09:00:00Z"
+  },
+  {
+    "inventory_id": "INV-JOL-SUV-02",
+    "dealership_id": "DLR-JOL",
+    "vehicle_model_id": "VM-SUV",
+    "quantity_available": 8,
+    "base_daily_rate": 86.0,
+    "status": "available",
+    "last_updated": "2026-07-13T16:00:00Z"
+  },
+  {
+    "inventory_id": "INV-JOL-PICKUP-01",
+    "dealership_id": "DLR-JOL",
+    "vehicle_model_id": "VM-PICKUP",
+    "quantity_available": 3,
+    "base_daily_rate": 96.0,
+    "status": "available",
+    "last_updated": "2026-07-08T16:00:00Z"
+  },
+  {
+    "inventory_id": "INV-JOL-PICKUP-02",
+    "dealership_id": "DLR-JOL",
+    "vehicle_model_id": "VM-PICKUP",
+    "quantity_available": 5,
+    "base_daily_rate": 99.0,
+    "status": "available",
+    "last_updated": "2026-07-10T14:00:00Z"
+  },
+  {
+    "inventory_id": "INV-JOL-CARGO-01",
+    "dealership_id": "DLR-JOL",
+    "vehicle_model_id": "VM-CARGO",
+    "quantity_available": 4,
+    "base_daily_rate": 108.0,
+    "status": "available",
+    "last_updated": "2026-07-13T11:00:00Z"
+  },
+  {
+    "inventory_id": "INV-JOL-CARGO-02",
+    "dealership_id": "DLR-JOL",
+    "vehicle_model_id": "VM-CARGO",
+    "quantity_available": 7,
+    "base_daily_rate": 112.0,
+    "status": "available",
+    "last_updated": "2026-07-11T13:00:00Z"
+  },
+  {
+    "inventory_id": "INV-SCH-COMPACT-01",
+    "dealership_id": "DLR-SCH",
+    "vehicle_model_id": "VM-COMPACT",
+    "quantity_available": 8,
+    "base_daily_rate": 54.0,
+    "status": "available",
+    "last_updated": "2026-07-08T09:00:00Z"
+  },
+  {
+    "inventory_id": "INV-SCH-COMPACT-02",
+    "dealership_id": "DLR-SCH",
+    "vehicle_model_id": "VM-COMPACT",
+    "quantity_available": 4,
+    "base_daily_rate": 57.0,
+    "status": "limited",
+    "last_updated": "2026-07-01T17:00:00Z"
+  },
+  {
+    "inventory_id": "INV-SCH-MIDSIZE-01",
+    "dealership_id": "DLR-SCH",
+    "vehicle_model_id": "VM-MIDSIZE",
+    "quantity_available": 4,
+    "base_daily_rate": 69.0,
+    "status": "available",
+    "last_updated": "2026-07-01T09:00:00Z"
+  },
+  {
+    "inventory_id": "INV-SCH-MIDSIZE-02",
+    "dealership_id": "DLR-SCH",
+    "vehicle_model_id": "VM-MIDSIZE",
+    "quantity_available": 4,
+    "base_daily_rate": 71.0,
+    "status": "limited",
+    "last_updated": "2026-07-01T13:00:00Z"
+  },
+  {
+    "inventory_id": "INV-SCH-SUV-01",
+    "dealership_id": "DLR-SCH",
+    "vehicle_model_id": "VM-SUV",
+    "quantity_available": 2,
+    "base_daily_rate": 94.0,
+    "status": "available",
+    "last_updated": "2026-07-05T18:00:00Z"
+  },
+  {
+    "inventory_id": "INV-SCH-SUV-02",
+    "dealership_id": "DLR-SCH",
+    "vehicle_model_id": "VM-SUV",
+    "quantity_available": 4,
+    "base_daily_rate": 99.0,
+    "status": "available",
+    "last_updated": "2026-07-12T17:00:00Z"
+  },
+  {
+    "inventory_id": "INV-SCH-PICKUP-01",
+    "dealership_id": "DLR-SCH",
+    "vehicle_model_id": "VM-PICKUP",
+    "quantity_available": 8,
+    "base_daily_rate": 106.0,
+    "status": "available",
+    "last_updated": "2026-07-08T14:00:00Z"
+  },
+  {
+    "inventory_id": "INV-SCH-PICKUP-02",
+    "dealership_id": "DLR-SCH",
+    "vehicle_model_id": "VM-PICKUP",
+    "quantity_available": 2,
+    "base_daily_rate": 109.0,
+    "status": "limited",
+    "last_updated": "2026-07-07T13:00:00Z"
+  },
+  {
+    "inventory_id": "INV-SCH-CARGO-01",
+    "dealership_id": "DLR-SCH",
+    "vehicle_model_id": "VM-CARGO",
+    "quantity_available": 7,
+    "base_daily_rate": 120.0,
+    "status": "available",
+    "last_updated": "2026-07-14T08:00:00Z"
+  },
+  {
+    "inventory_id": "INV-SCH-CARGO-02",
+    "dealership_id": "DLR-SCH",
+    "vehicle_model_id": "VM-CARGO",
+    "quantity_available": 1,
+    "base_daily_rate": 122.0,
+    "status": "available",
+    "last_updated": "2026-07-06T09:00:00Z"
+  }
+]

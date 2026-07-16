@@ -1,0 +1,93 @@
+import { useEffect, useState } from "react";
+import type { SearchMeta, SearchRequest, SearchResponse, SessionProfile } from "./types";
+import { createSession, fetchMeta, getStoredProfile, search } from "./api";
+import { UserSwitcher } from "./components/UserSwitcher";
+import { SearchControls } from "./components/SearchControls";
+import { Results } from "./components/Results";
+
+const EMPTY_SEARCH: SearchRequest = { sort: "relevance" };
+
+export function App() {
+  const [profile, setProfile] = useState<SessionProfile | null>(getStoredProfile());
+  const [meta, setMeta] = useState<SearchMeta | null>(null);
+  const [req, setReq] = useState<SearchRequest>(EMPTY_SEARCH);
+  const [data, setData] = useState<SearchResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const isCustomer = profile?.role === "customer_user";
+
+  // Load dropdown metadata whenever we have an active session.
+  useEffect(() => {
+    if (!profile) return;
+    fetchMeta()
+      .then(setMeta)
+      .catch(() => setMeta(null));
+  }, [profile]);
+
+  async function handleSelectUser(userId: string) {
+    setError(null);
+    try {
+      const p = await createSession(userId);
+      setProfile(p);
+      // Switching identity clears prior results so nothing stale is shown.
+      setData(null);
+      // Personalized sort only makes sense for customer users.
+      if (p.role !== "customer_user" && req.sort === "personalized_price_asc") {
+        setReq({ ...req, sort: "relevance" });
+      }
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }
+
+  async function handleSearch() {
+    if (!profile) return;
+    setLoading(true);
+    setError(null);
+    try {
+      setData(await search(req));
+    } catch (e) {
+      setError((e as Error).message);
+      setData(null);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleClear() {
+    setReq(EMPTY_SEARCH);
+    setData(null);
+    setError(null);
+  }
+
+  return (
+    <div className="wrap">
+      <h1>B2B Car-Rental — Protected Personalized Search</h1>
+      <div className="dev-banner">
+        ⚠️ <b>Development only.</b> Mock authentication over synthetic users — no real
+        passwords, no production identity. The user switcher below impersonates seeded
+        identities to demonstrate role- and tenant-dependent behavior.
+      </div>
+
+      <UserSwitcher active={profile} onSelect={handleSelectUser} />
+
+      {!profile ? (
+        <div className="card state muted">Select a user above to start searching.</div>
+      ) : (
+        <>
+          <SearchControls
+            meta={meta}
+            value={req}
+            onChange={setReq}
+            onSearch={handleSearch}
+            onClear={handleClear}
+            loading={loading}
+            showPersonalizedSort={!!isCustomer}
+          />
+          <Results data={data} loading={loading} error={error} />
+        </>
+      )}
+    </div>
+  );
+}

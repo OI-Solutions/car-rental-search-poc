@@ -1,0 +1,18 @@
+{
+  "query": {
+    "geo_distance": {
+      "distance": "50km",
+      "dealership_location": { "lat": 41.8781, "lon": -87.6298 }
+    }
+  },
+  "sort": [
+    {
+      "_geo_distance": {
+        "dealership_location": { "lat": 41.8781, "lon": -87.6298 },
+        "order": "asc",
+        "unit": "km"
+      }
+    }
+  ],
+  "size": 50
+}

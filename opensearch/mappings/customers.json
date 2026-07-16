@@ -1,0 +1,19 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0
+  },
+  "mappings": {
+    "dynamic": "strict",
+    "properties": {
+      "customer_id": { "type": "keyword" },
+      "company_name": {
+        "type": "text",
+        "fields": { "keyword": { "type": "keyword" } }
+      },
+      "industry": { "type": "keyword" },
+      "home_city": { "type": "keyword" },
+      "account_status": { "type": "keyword" }
+    }
+  }
+}

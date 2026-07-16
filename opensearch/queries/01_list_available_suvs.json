@@ -1,0 +1,12 @@
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "vehicle_class": "suv" } },
+        { "term": { "status": "available" } }
+      ]
+    }
+  },
+  "sort": [{ "base_daily_rate": "asc" }],
+  "size": 50
+}

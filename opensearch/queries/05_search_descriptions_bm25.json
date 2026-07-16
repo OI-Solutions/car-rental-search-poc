@@ -1,0 +1,8 @@
+{
+  "query": {
+    "match": {
+      "description": "cargo delivery equipment"
+    }
+  },
+  "size": 10
+}

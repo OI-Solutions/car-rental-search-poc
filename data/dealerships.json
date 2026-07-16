@@ -1,0 +1,42 @@
+[
+  {
+    "dealership_id": "DLR-CHI",
+    "name": "Chicago Central Fleet",
+    "city": "Chicago",
+    "state": "IL",
+    "latitude": 41.8781,
+    "longitude": -87.6298
+  },
+  {
+    "dealership_id": "DLR-PLN",
+    "name": "Plainfield Business Rentals",
+    "city": "Plainfield",
+    "state": "IL",
+    "latitude": 41.6322,
+    "longitude": -88.212
+  },
+  {
+    "dealership_id": "DLR-NAP",
+    "name": "Naperville Commercial Auto",
+    "city": "Naperville",
+    "state": "IL",
+    "latitude": 41.7508,
+    "longitude": -88.1535
+  },
+  {
+    "dealership_id": "DLR-JOL",
+    "name": "Joliet Jobsite Vehicles",
+    "city": "Joliet",
+    "state": "IL",
+    "latitude": 41.525,
+    "longitude": -88.0817
+  },
+  {
+    "dealership_id": "DLR-SCH",
+    "name": "Schaumburg Corporate Mobility",
+    "city": "Schaumburg",
+    "state": "IL",
+    "latitude": 42.0334,
+    "longitude": -88.0834
+  }
+]

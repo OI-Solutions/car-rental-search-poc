@@ -1,0 +1,16 @@
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "filter": [{ "term": { "status": "available" } }]
+    }
+  },
+  "aggs": {
+    "by_vehicle_class": {
+      "terms": { "field": "vehicle_class", "size": 20 },
+      "aggs": {
+        "total_available": { "sum": { "field": "quantity_available" } }
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0
+  },
+  "mappings": {
+    "dynamic": "strict",
+    "properties": {
+      "agreement_id": { "type": "keyword" },
+
+      "customer_id": { "type": "keyword" },
+      "customer_company_name": {
+        "type": "text",
+        "fields": { "keyword": { "type": "keyword" } }
+      },
+      "customer_home_city": { "type": "keyword" },
+
+      "dealership_id": { "type": "keyword" },
+      "dealership_name": {
+        "type": "text",
+        "fields": { "keyword": { "type": "keyword" } }
+      },
+      "dealership_city": { "type": "keyword" },
+
+      "vehicle_class": { "type": "keyword" },
+      "discount_percent": { "type": "float" },
+      "valid_from": {
+        "type": "date",
+        "format": "strict_date_optional_time||yyyy-MM-dd"
+      },
+      "valid_to": {
+        "type": "date",
+        "format": "strict_date_optional_time||yyyy-MM-dd"
+      },
+      "agreement_status": { "type": "keyword" }
+    }
+  }
+}
