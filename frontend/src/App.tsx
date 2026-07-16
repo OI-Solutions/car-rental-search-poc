@@ -4,8 +4,11 @@ import { createSession, fetchMeta, getStoredProfile, search } from "./api";
 import { UserSwitcher } from "./components/UserSwitcher";
 import { SearchControls } from "./components/SearchControls";
 import { Results } from "./components/Results";
+import { ProcurementSearch } from "./components/ProcurementSearch";
 
 const EMPTY_SEARCH: SearchRequest = { sort: "relevance" };
+
+type SearchMode = "basic" | "procurement";
 
 export function App() {
   const [profile, setProfile] = useState<SessionProfile | null>(getStoredProfile());
@@ -14,6 +17,7 @@ export function App() {
   const [data, setData] = useState<SearchResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [mode, setMode] = useState<SearchMode>("basic");
 
   const isCustomer = profile?.role === "customer_user";
 
@@ -76,16 +80,41 @@ export function App() {
         <div className="card state muted">Select a user above to start searching.</div>
       ) : (
         <>
-          <SearchControls
-            meta={meta}
-            value={req}
-            onChange={setReq}
-            onSearch={handleSearch}
-            onClear={handleClear}
-            loading={loading}
-            showPersonalizedSort={!!isCustomer}
-          />
-          <Results data={data} loading={loading} error={error} />
+          <div className="segmented" role="tablist" aria-label="Search mode">
+            <button
+              role="tab"
+              aria-selected={mode === "basic"}
+              className={mode === "basic" ? "seg active" : "seg"}
+              onClick={() => setMode("basic")}
+            >
+              Basic Search
+            </button>
+            <button
+              role="tab"
+              aria-selected={mode === "procurement"}
+              className={mode === "procurement" ? "seg active" : "seg"}
+              onClick={() => setMode("procurement")}
+            >
+              Procurement Search
+            </button>
+          </div>
+
+          {mode === "basic" ? (
+            <>
+              <SearchControls
+                meta={meta}
+                value={req}
+                onChange={setReq}
+                onSearch={handleSearch}
+                onClear={handleClear}
+                loading={loading}
+                showPersonalizedSort={!!isCustomer}
+              />
+              <Results data={data} loading={loading} error={error} />
+            </>
+          ) : (
+            <ProcurementSearch />
+          )}
         </>
       )}
     </div>

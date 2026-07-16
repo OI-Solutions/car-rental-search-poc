@@ -82,13 +82,19 @@ nothing more. Authorization is kept in the application layer for concrete reason
 Everything the client sends is **untrusted input**. The only trusted assertion of
 identity is the **signed token the server itself issued**.
 
-```
-        UNTRUSTED (client-controlled)          │        TRUSTED (server-derived)
-  ───────────────────────────────────────────  │  ───────────────────────────────────
-  Authorization: Bearer <token>  ──verify sig──┼──►  AuthContext { role, customerId,
-  body: { query, vehicle_class, city, sort }   │                    dealershipId }
-  body: { customer_id, dealership_id, ... }  ✗ │       (re-checked: user still active)
-        ▲ ignored / rejected — never trusted    │
+```mermaid
+flowchart LR
+    subgraph U["UNTRUSTED — client-controlled"]
+        T["Authorization: Bearer token"]
+        S["body: query, vehicle_class, city, sort"]
+        X["body: customer_id, dealership_id<br/>✗ ignored / rejected"]
+    end
+    subgraph V["TRUSTED — server-derived"]
+        A["AuthContext<br/>role, customerId, dealershipId<br/>(user re-checked active)"]
+    end
+    T -- "verify signature" --> A
+    S -. "validated inputs only" .-> A
+    X -- "never trusted" --x A
 ```
 
 - `AuthContext` is built **only** from verified token claims — never from query or
@@ -107,6 +113,17 @@ Defined in: `backend/src/domain/types.ts` (`AuthContext`),
 
 Every protected request passes through four independent controls. Each one stops a
 distinct class of attack; they are layered so a mistake in one is not catastrophic.
+
+```mermaid
+flowchart LR
+    R([Request]) --> C1{"1· Authenticated<br/>& active?"}
+    C1 -- no --> D1[401 / 403]
+    C1 -- yes --> C2{"2· Only safe<br/>domain inputs?"}
+    C2 -- no --> D2[400]
+    C2 -- yes --> C3["3· Server builds query<br/>+ mandatory tenant filter"]
+    C3 --> C4["4· Own-tenant pricing<br/>+ DTO redaction"]
+    C4 --> OK([Protected response])
+```
 
 ### Checkpoint 1 — Authentication gate
 **Where:** `backend/src/auth/middleware.ts` (`requireAuth`)

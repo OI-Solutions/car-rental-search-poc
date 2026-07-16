@@ -303,7 +303,7 @@ sequenceDiagram
     alt customer_user
         API->>OS: this customer's active agreements (1 query)
         OS-->>API: agreements
-        API->>API: apply precedence + effective price; sort if personalized
+        API->>API: apply precedence + effective price, sort if personalized
     end
     API->>API: map to redacted DTO (no agreement/customer IDs)
     API-->>UI: protected results
@@ -369,6 +369,31 @@ npm run dev            # http://localhost:5173
 ```
 
 Open http://localhost:5173, pick a user, and search.
+
+### UI modes: Basic & Procurement
+
+A segmented toggle at the top of the search interface switches between two modes:
+
+- **Basic Search** — the implemented, backend-connected flow described above
+  (protected personalized search over live OpenSearch inventory).
+- **Procurement Search** — a **front-end-only mockup** (clearly labeled *"Future
+  procurement workflow — mock data"*) illustrating how a large customer would
+  source many vehicles across regions. It calls **no backend** and runs no
+  optimizer; it renders a static, deterministic sample sourcing plan (allocation
+  table + summary) to show how the problem shifts from *ranking results* to
+  *allocating demand across locations*. Concept flow:
+
+```mermaid
+flowchart LR
+    A[Procurement request] --> B[Regional + inventory<br/>filtering in OpenSearch]
+    B --> C[Customer-specific pricing<br/>in the application layer]
+    C --> D[Future allocation /<br/>optimization service]
+    D --> E[Sourcing plan]
+    style D stroke-dasharray: 5 5
+```
+
+The first two stages reuse today's implemented pipeline; only the allocation /
+optimization stage is future/unbuilt.
 
 ### Environment variables (root `.env`, added in Phase 2)
 
