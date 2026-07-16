@@ -84,6 +84,18 @@ h2 { font-size: 1rem; margin: 0 0 0.75rem; }
 .flow-arrow { opacity: 0.5; }
 .flow-note { font-size: 0.8rem; margin: 0.4rem 0 0; }
 
+/* Dummy-data pulldown inside the dev-only banner */
+.devdata { margin-top: 0.5rem; }
+.devdata > summary { cursor: pointer; font-weight: 600; text-decoration: underline; }
+.devdata-body { font-size: 0.85rem; }
+.devdata-body ul { margin: 0.4rem 0; padding-left: 1.1rem; }
+.devdata-body li { margin-bottom: 0.3rem; }
+.devdata-body code { font-size: 0.82em; }
+
+/* Inline help text + info icon for procurement controls */
+.help { font-size: 0.8rem; opacity: 0.75; margin: 0.4rem 0 0; }
+.help-icon { margin-left: 0.3rem; cursor: help; opacity: 0.7; font-size: 0.85em; }
+
 .checks { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; }
 .check { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.88rem; opacity: 0.95; }
 .check input { width: auto; }

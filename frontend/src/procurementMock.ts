@@ -25,12 +25,37 @@ export type Objective =
   | "fewest_dealerships"
   | "balanced";
 
-export const OBJECTIVES: { value: Objective; label: string }[] = [
-  { value: "lowest_total_cost", label: "Lowest total cost" },
-  { value: "highest_fulfillment", label: "Highest fulfillment" },
-  { value: "fewest_dealerships", label: "Fewest dealerships" },
-  { value: "balanced", label: "Balanced" },
+export const OBJECTIVES: { value: Objective; label: string; help: string }[] = [
+  {
+    value: "lowest_total_cost",
+    label: "Lowest total cost",
+    help: "Minimize total personalized cost across the sourcing plan.",
+  },
+  {
+    value: "highest_fulfillment",
+    label: "Highest fulfillment",
+    help: "Maximize how much of the requested quantity is supplied.",
+  },
+  {
+    value: "fewest_dealerships",
+    label: "Fewest dealerships",
+    help: "Minimize the number of dealerships used (less operational coordination).",
+  },
+  {
+    value: "balanced",
+    label: "Balanced",
+    help:
+      "Conceptually trade off cost, fulfillment, distance, and dealership count. " +
+      "Future scoring strategy — no optimizer is implemented.",
+  },
 ];
+
+// Help text for the two fulfillment toggles.
+export const SPLIT_HELP =
+  "Combine inventory from multiple dealerships to satisfy one demand request.";
+export const CONTRACTED_HELP =
+  "Exclude dealerships without an active customer agreement, even if they could " +
+  "offer a public base rate.";
 
 export interface Region {
   id: string;

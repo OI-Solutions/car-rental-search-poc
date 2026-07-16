@@ -1,8 +1,10 @@
 import { useState } from "react";
 import {
   buildMockAllocation,
+  CONTRACTED_HELP,
   OBJECTIVES,
   REGIONS,
+  SPLIT_HELP,
   VEHICLE_CLASSES,
   type AllocationPlan,
   type Objective,
@@ -153,16 +155,21 @@ export function ProcurementSearch() {
             <select
               id="p-obj"
               value={form.objective}
+              title={OBJECTIVES.find((o) => o.value === form.objective)?.help}
               onChange={(e) => set({ objective: e.target.value as Objective })}
             >
               {OBJECTIVES.map((o) => (
-                <option key={o.value} value={o.value}>
+                <option key={o.value} value={o.value} title={o.help}>
                   {o.label}
                 </option>
               ))}
             </select>
           </div>
         </div>
+        <p className="help">
+          <b>{OBJECTIVES.find((o) => o.value === form.objective)?.label}:</b>{" "}
+          {OBJECTIVES.find((o) => o.value === form.objective)?.help}
+        </p>
 
         <div className="field" style={{ marginTop: "0.75rem" }}>
           <label>Regions</label>
@@ -181,21 +188,27 @@ export function ProcurementSearch() {
         </div>
 
         <div className="row" style={{ marginTop: "0.75rem", alignItems: "center" }}>
-          <label className="check">
+          <label className="check" title={SPLIT_HELP}>
             <input
               type="checkbox"
               checked={form.allowSplit}
               onChange={(e) => set({ allowSplit: e.target.checked })}
             />
             Allow split fulfillment across dealerships
+            <span className="help-icon" title={SPLIT_HELP} aria-label={SPLIT_HELP}>
+              ⓘ
+            </span>
           </label>
-          <label className="check">
+          <label className="check" title={CONTRACTED_HELP}>
             <input
               type="checkbox"
               checked={form.contractedOnly}
               onChange={(e) => set({ contractedOnly: e.target.checked })}
             />
             Contracted dealerships only
+            <span className="help-icon" title={CONTRACTED_HELP} aria-label={CONTRACTED_HELP}>
+              ⓘ
+            </span>
           </label>
           <div style={{ display: "flex", gap: "0.5rem", marginLeft: "auto" }}>
             <button className="primary" onClick={handlePlan} disabled={form.regions.length === 0}>

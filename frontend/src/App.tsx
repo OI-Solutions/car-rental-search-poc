@@ -5,6 +5,7 @@ import { UserSwitcher } from "./components/UserSwitcher";
 import { SearchControls } from "./components/SearchControls";
 import { Results } from "./components/Results";
 import { ProcurementSearch } from "./components/ProcurementSearch";
+import { DevDataNote } from "./components/DevDataNote";
 
 const EMPTY_SEARCH: SearchRequest = { sort: "relevance" };
 
@@ -72,6 +73,7 @@ export function App() {
         ⚠️ <b>Development only.</b> Mock authentication over synthetic users — no real
         passwords, no production identity. The user switcher below impersonates seeded
         identities to demonstrate role- and tenant-dependent behavior.
+        <DevDataNote />
       </div>
 
       <UserSwitcher active={profile} onSelect={handleSelectUser} />

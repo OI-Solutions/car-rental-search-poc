@@ -4,11 +4,43 @@ This document is the conceptual heart of the POC. It explains **how the
 application layer separates *authorization* from *retrieval*** in a multi-tenant
 B2B system, and why that separation is the right architecture.
 
-> **Thesis:** OpenSearch is a **retrieval engine, not an authorization boundary.**
-> In a multi-tenant application, identity, tenant scoping, and data redaction must
-> be owned by the application layer — *around* retrieval, never delegated to the
-> search engine or to the client. This project is a small, complete demonstration
-> of that principle.
+> **Thesis:** In this multi-tenant system the **application layer owns the primary
+> authorization and business-policy decision** — identity, tenant scoping, pricing,
+> and redaction happen *around* retrieval and are never delegated to the client.
+> OpenSearch is the retrieval engine; its own security controls *may* enforce
+> overlapping datastore restrictions as **defense in depth** (see the Production
+> notes below). This project is a small, complete demonstration of that separation.
+
+---
+
+## At a glance: the protected search flow
+
+The complete `customer_user` path, end to end — every step below runs in the
+application except the two OpenSearch retrievals:
+
+```mermaid
+sequenceDiagram
+    participant B as User / Browser
+    participant App as Application (Express)
+    participant Price as Pricing service
+    participant OS as OpenSearch
+    B->>App: POST /api/search (Bearer token + safe inputs)
+    App->>App: verify token, derive role + tenant (AuthContext)
+    App->>App: validate safe search inputs (allow-list)
+    App->>OS: controlled inventory query (+ mandatory tenant filter)
+    OS-->>App: inventory candidates (available, qty > 0)
+    App->>OS: authenticated customer's active agreements (1 query)
+    OS-->>App: agreements
+    App->>Price: calculate effective rates (precedence + formula)
+    Price-->>App: priced results
+    App->>App: optionally rerank by personalized price
+    App->>App: DTO mapper redacts internal fields
+    App-->>B: authorized, personalized results
+```
+
+> Role differences: only `customer_user` triggers agreement retrieval and pricing;
+> `dealership_user` and `corporate_admin` skip straight to base-price redaction (the
+> dealership user additionally carries a mandatory dealership filter).
 
 ---
 
@@ -42,11 +74,14 @@ The key multi-tenant challenges this raises:
 
 ---
 
-## 2. Why authorization does **not** live in OpenSearch
+## 2. Why the application owns primary authorization
 
 OpenSearch is excellent at what a search engine should do: **retrieve, filter,
-score (BM25), and aggregate**. It is intentionally used for exactly that here and
-nothing more. Authorization is kept in the application layer for concrete reasons:
+score (BM25), and aggregate**. Here it is used for exactly that, and the
+**application owns the primary authorization and business-policy decision.**
+OpenSearch security controls *may* enforce overlapping datastore restrictions as
+defense in depth — the two are complementary, not either/or. The primary control
+sits in the application for concrete reasons:
 
 1. **The query is only as trustworthy as who built it.** If the browser could send
    Query DSL, "authorization" would mean trusting the client to filter its own
@@ -74,6 +109,11 @@ nothing more. Authorization is kept in the application layer for concrete reason
 | Return `_source` for whitelisted fields | Resolve per-tenant pricing from private agreements |
 | — | Redact results into role-specific DTOs |
 | — | Re-rank by personalized price (engine can't) |
+
+> **Production note — defense in depth.** Add per-tenant OpenSearch **service
+> identities** and **Document-/Field-Level Security (DLS/FLS)** so the datastore
+> *also* enforces tenant isolation. These sit *beneath* the application control and
+> guard against an application bug — they do not replace it.
 
 ---
 
@@ -132,6 +172,11 @@ user. Missing/garbage token → `401`; deactivated user → `403`.
 **Stops:** anonymous access; use of a revoked identity; token forgery (signature
 check).
 
+> **Production note — identity.** The mock dev-session JWT stands in for a real
+> **OIDC/SAML identity provider**. In production the IdP *authenticates* the user;
+> the application still *maps* that identity to internal **roles and tenants** and
+> makes the authorization decision. Application-level authorization stays primary.
+
 ### Checkpoint 2 — Input validation (allow-list)
 **Where:** `backend/src/validation/searchSchema.ts` (zod, `.strict()`)
 **Enforces:** the request may contain **only** `query`, `vehicle_class`, `city`,
@@ -187,6 +232,125 @@ raw agreements, unrestricted `_source`, and OpenSearch metadata.
 
 ---
 
+## Worked example: a customer SUV search
+
+Following one request through the layers. Identity: `USR-001-C` → customer
+`CUS-001` (which has a 28% dealership-wide agreement at Chicago).
+
+**1 · Safe request the frontend sends.** Only domain inputs; the token carries the
+identity. No IDs, no Query DSL.
+
+```http
+POST /api/search
+Authorization: Bearer <dev JWT for USR-001-C>
+Content-Type: application/json
+
+{ "vehicle_class": "suv", "sort": "personalized_price_asc" }
+```
+
+**2 · Controlled Query DSL the backend builds** (`buildInventoryQuery`). No text
+query here, so no `multi_match`; a `customer_user` gets **no** dealership filter.
+`_source` is an explicit allow-list.
+
+```json
+POST inventory/_search
+{
+  "size": 200,
+  "_source": ["inventory_id","dealership_id","dealership_name","dealership_city",
+              "make","model","vehicle_class","description","seats","fuel_type",
+              "quantity_available","base_daily_rate","status"],
+  "query": {
+    "bool": {
+      "filter": [
+        { "range": { "quantity_available": { "gt": 0 } } },
+        { "term": { "vehicle_class": "suv" } }
+      ],
+      "must_not": [ { "term": { "status": "unavailable" } } ]
+    }
+  },
+  "sort": [ { "base_daily_rate": "asc" }, { "inventory_id": "asc" } ]
+}
+```
+
+Separately, **one** agreements query — the `customer_id` comes from the token, not
+the request (`getActiveAgreementsForCustomer`):
+
+```json
+POST customer_agreements/_search
+{
+  "size": 100,
+  "_source": ["dealership_id","vehicle_class","discount_percent",
+              "agreement_status","valid_from","valid_to"],
+  "query": { "bool": { "filter": [
+    { "term":  { "customer_id": "CUS-001" } },
+    { "term":  { "agreement_status": "active" } },
+    { "range": { "valid_from": { "lte": "2026-07-16" } } },
+    { "range": { "valid_to":   { "gte": "2026-07-16" } } }
+  ] } }
+}
+```
+
+**3 · Inventory document OpenSearch returns** (one hit, `_source` limited to the
+requested fields):
+
+```json
+{
+  "_index": "inventory",
+  "_id": "INV-CHI-SUV-01",
+  "_source": {
+    "inventory_id": "INV-CHI-SUV-01",
+    "dealership_id": "DLR-CHI",
+    "dealership_name": "Chicago Central Fleet",
+    "dealership_city": "Chicago",
+    "make": "Ford",
+    "model": "Explorer",
+    "vehicle_class": "suv",
+    "description": "Three-row SUV for crews, mixed terrain, and jobs requiring passenger and cargo flexibility.",
+    "seats": 7,
+    "fuel_type": "gasoline",
+    "quantity_available": 4,
+    "base_daily_rate": 92,
+    "status": "available"
+  }
+}
+```
+
+**4 · Final redacted, personalized API response.** The pricing service applies the
+28% dealership-wide agreement (`92 × (1 − 0.28) = 66.24`); the DTO mapper drops
+`dealership_id`, `seats`, `fuel_type`, `status`, and all OpenSearch metadata —
+and no agreement id or `customer_id` ever appears.
+
+```json
+{
+  "role": "customer_user",
+  "pricing": "personalized",
+  "sort": "personalized_price_asc",
+  "count": 10,
+  "results": [
+    {
+      "inventory_id": "INV-CHI-SUV-01",
+      "dealership_name": "Chicago Central Fleet",
+      "dealership_city": "Chicago",
+      "make": "Ford",
+      "model": "Explorer",
+      "vehicle_class": "suv",
+      "description": "Three-row SUV for crews, mixed terrain, and jobs requiring passenger and cargo flexibility.",
+      "quantity_available": 4,
+      "base_daily_rate": 92,
+      "effective_daily_rate": 66.24,
+      "discount_percent": 28,
+      "pricing_source": "customer_agreement",
+      "agreement_applied": true
+    }
+  ]
+}
+```
+
+The `personalized_price_asc` ordering is applied in the service *after* pricing, so
+Chicago's discounted `$66.24` can outrank a dealership with a lower base rate.
+
+---
+
 ## 6. Threat scenarios → mitigations
 
 | Attempt | Result | Control |
@@ -203,23 +367,57 @@ raw agreements, unrestricted `_source`, and OpenSearch metadata.
 Each row corresponds to an automated test in `backend/test/` (see the test summary
 in the README); the authorization and pricing behavior is regression-guarded.
 
+> **Production note — operations.** **Audit logging** (every authorization decision
+> and agreement access) and **rate limiting / anomaly detection** belong around the
+> protected API surface.
+
 ---
 
-## 7. Defense in depth: what production would add
+## 7. Defense in depth: production summary
 
-Application-level authorization is the **primary and sufficient** control for this
-POC. A production system would layer additional controls *beneath* it — none of
-which replace the application boundary:
+The inline **Production notes** above cover each area in context; consolidated as a
+checklist, a production build would add — all *beneath* the application boundary,
+never replacing it:
 
-- **Real identity provider** (OIDC/SAML), refresh/rotation, MFA — replacing the mock
-  dev-session endpoint.
-- **Per-tenant OpenSearch identities + Document-/Field-Level Security (DLS/FLS)** so
-  the datastore *also* enforces isolation, protecting against an application bug.
-- **Audit logging** of every authorization decision and agreement access.
-- **Rate limiting / anomaly detection** on the search and session endpoints.
-- **Materialized per-customer offers**, which would additionally let the engine sort
-  by personalized price (today that re-rank is done in the service — see the README
-  limitation).
+- **Identity** — a real OIDC/SAML provider (refresh/rotation, MFA) in place of the
+  mock dev-session endpoint; the app still maps identities to roles/tenants.
+- **Datastore** — per-tenant OpenSearch service identities + DLS/FLS for overlapping
+  isolation.
+- **Operations** — audit logging and rate limiting around the protected API.
+- **Pricing at scale** — materialized per-customer offers, which would also let the
+  engine sort by personalized price (today that re-rank is in the service).
+
+---
+
+## National-scale extension: search vs. procurement
+
+The implemented **Basic Search** answers a *regional inventory* question — "rank the
+available SUVs, priced for this customer." A **Procurement Search** answers a
+*multi-site sourcing* question — "supply 50 pickups across 12 job sites." These are
+different problems: ranking individual results vs. **allocating demand across many
+locations**.
+
+> **Procurement Search is a future conceptual workflow.** The current backend does
+> **not** perform multi-site allocation. The Procurement tab is a frontend-only
+> mockup rendering a static sample plan; no allocation/optimization runs.
+
+A request like *"50 pickups across 12 job sites"* would extend — not replace — the
+same pipeline shown above:
+
+1. **OpenSearch candidate retrieval** — eligible inventory per region (the same
+   controlled, tenant-scoped query, run across locations).
+2. **Customer-specific pricing** — the same application-layer agreement resolution,
+   applied to every candidate.
+3. **A future allocation / optimization stage** — assign quantities across
+   dealerships to meet demand under an objective (cost, fulfillment, count…).
+4. **Inventory + final-price revalidation before booking** — re-check availability
+   and recompute prices at commit time, since both can move between plan and book.
+
+**Split fulfillment across dealerships** means combining inventory from *more than
+one* dealership to satisfy a single demand line. Example: 20 pickups needed, but the
+nearest dealership has 12 — with split fulfillment on, the plan sources 12 there and
+8 from the next-best location; with it off, that line is single-sourced and the
+remaining 8 show as unmet.
 
 ---
 
