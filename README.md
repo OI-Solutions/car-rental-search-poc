@@ -9,6 +9,12 @@ customer-specific pricing, in two phases:
   an Express API + React UI implementing mock authentication, role/tenant
   authorization, controlled queries, and personalized pricing.
 
+> 🔑 **The point of this project** is the multi-tenant access-control architecture:
+> how an application layer separates **authorization** from **retrieval** so that
+> OpenSearch stays a search engine and the app owns identity, tenant scoping, and
+> redaction. That design is written up in
+> **[docs/ACCESS_CONTROL.md](docs/ACCESS_CONTROL.md)** — start there.
+
 > **Local development only.** The stack runs the OpenSearch security plugin with
 > the bundled self-signed demo certificate and a single admin user from `.env`.
 > Authentication in Phase 2 is **mocked**. Nothing here is hardened; never expose
@@ -427,6 +433,9 @@ if OpenSearch is unreachable.
 is rejected with 400.
 
 ## Security boundaries (Phase 2)
+
+> Full rationale, the four authorization checkpoints, the trust boundary, and a
+> threat-model table are in **[docs/ACCESS_CONTROL.md](docs/ACCESS_CONTROL.md)**.
 
 - Unauthenticated protected requests are rejected (401); inactive users refused (403).
 - Tenant identity is derived **only** from the verified token; client-supplied
