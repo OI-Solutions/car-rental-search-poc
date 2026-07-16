@@ -96,6 +96,14 @@ h2 { font-size: 1rem; margin: 0 0 0.75rem; }
 .help { font-size: 0.8rem; opacity: 0.75; margin: 0.4rem 0 0; }
 .help-icon { margin-left: 0.3rem; cursor: help; opacity: 0.7; font-size: 0.85em; }
 
+/* Always-visible optimization-objective explainer (updates on selection) */
+.obj-explain {
+  margin-top: 0.7rem; padding: 0.55rem 0.75rem; font-size: 0.86rem;
+  background: #eef3ff; border: 1px solid #cddafc; border-radius: 6px;
+}
+.obj-explain-title { font-weight: 700; margin-bottom: 0.15rem; }
+@media (prefers-color-scheme: dark) { .obj-explain { background: #1b2740; border-color: #2f426b; } }
+
 .checks { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; }
 .check { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.88rem; opacity: 0.95; }
 .check input { width: auto; }

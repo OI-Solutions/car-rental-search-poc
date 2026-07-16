@@ -94,6 +94,8 @@ export function ProcurementSearch() {
     setPlan(null);
   }
 
+  const selectedObjective = OBJECTIVES.find((o) => o.value === form.objective)!;
+
   return (
     <>
       <div className="card">
@@ -109,6 +111,13 @@ export function ProcurementSearch() {
           sourcing plan.
         </p>
         <ArchitectureFlow />
+
+        <div className="obj-explain">
+          <div className="obj-explain-title">
+            Optimization objective — {selectedObjective.label}
+          </div>
+          <div>{selectedObjective.help}</div>
+        </div>
 
         <div className="row" style={{ marginTop: "0.75rem" }}>
           <div className="field">
@@ -166,10 +175,6 @@ export function ProcurementSearch() {
             </select>
           </div>
         </div>
-        <p className="help">
-          <b>{OBJECTIVES.find((o) => o.value === form.objective)?.label}:</b>{" "}
-          {OBJECTIVES.find((o) => o.value === form.objective)?.help}
-        </p>
 
         <div className="field" style={{ marginTop: "0.75rem" }}>
           <label>Regions</label>
@@ -194,7 +199,7 @@ export function ProcurementSearch() {
               checked={form.allowSplit}
               onChange={(e) => set({ allowSplit: e.target.checked })}
             />
-            Allow split fulfillment across dealerships
+            Combine inventory across dealerships (split fulfillment)
             <span className="help-icon" title={SPLIT_HELP} aria-label={SPLIT_HELP}>
               ⓘ
             </span>
