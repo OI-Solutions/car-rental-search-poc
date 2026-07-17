@@ -31,11 +31,20 @@ function bool(name: string, fallback: boolean): boolean {
   return ["1", "true", "yes", "on"].includes(v.trim().toLowerCase());
 }
 
+/**
+ * Retrieval backend. "opensearch" talks to a real cluster; "fixture" serves the
+ * `data/*.json` corpus from memory so the API can run without one (demo hosts too
+ * small for a JVM). Everything above retrieval — auth, tenant scoping, agreement
+ * pricing, redaction — is identical either way.
+ */
+export type SearchBackend = "opensearch" | "fixture";
+
 export interface AppConfig {
   apiPort: number;
   corsOrigin: string;
   jwtSecret: string;
   jwtTtlSeconds: number;
+  searchBackend: SearchBackend;
   opensearch: {
     node: string;
     username: string;
@@ -48,6 +57,14 @@ export interface AppConfig {
   };
 }
 
+function searchBackend(): SearchBackend {
+  const v = str("SEARCH_BACKEND", "opensearch").trim().toLowerCase();
+  if (v !== "opensearch" && v !== "fixture") {
+    throw new Error(`Invalid SEARCH_BACKEND "${v}" — expected "opensearch" or "fixture"`);
+  }
+  return v;
+}
+
 export function loadConfig(): AppConfig {
   const scheme = str("OPENSEARCH_SCHEME", "https");
   const host = str("OPENSEARCH_HOST", "localhost");
@@ -56,6 +73,9 @@ export function loadConfig(): AppConfig {
   return {
     apiPort: Number(str("API_PORT", "4000")),
     corsOrigin: str("CORS_ORIGIN", "http://localhost:5173"),
+    // Defaults to the real cluster: fixture mode must be opted into explicitly so
+    // a missing env var can never silently serve fake retrieval in production.
+    searchBackend: searchBackend(),
     // The dev secret has a fallback so tests/dev "just work", but it is clearly
     // labeled and expected to be overridden via .env.
     jwtSecret: str("JWT_DEV_SECRET", "dev-only-insecure-secret-change-me"),
