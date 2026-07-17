@@ -1,6 +1,9 @@
 # Local secrets / config — never commit
 .env
 
+# Private deployment notes (server access, keys, box internals)
+DEPLOYMENT-PRIVATE.md
+
 # Python
 __pycache__/
 *.py[cod]
