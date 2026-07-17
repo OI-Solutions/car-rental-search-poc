@@ -92,6 +92,17 @@ function buildSort(params: SearchParams): Record<string, unknown>[] {
   return [{ inventory_id: "asc" }];
 }
 
+/** The complete request body sent to OpenSearch — single source of truth, also
+ * surfaced by the dev "explain" inspector so it shows the real query. */
+export function buildSearchBody(auth: AuthContext, params: SearchParams): Record<string, unknown> {
+  return {
+    size: MAX_RESULTS,
+    _source: SOURCE_FIELDS,
+    query: buildInventoryQuery(auth, params),
+    sort: buildSort(params),
+  };
+}
+
 export interface SearchDeps {
   client?: Client;
 }
@@ -104,12 +115,7 @@ export async function searchInventory(
   const { getOpenSearchClient } = await import("../opensearch/client.js");
   const client = deps.client ?? getOpenSearchClient();
 
-  const body = {
-    size: MAX_RESULTS,
-    _source: SOURCE_FIELDS,
-    query: buildInventoryQuery(auth, params),
-    sort: buildSort(params),
-  };
+  const body = buildSearchBody(auth, params);
 
   const res = await client.search({ index: config.indexes.inventory, body });
   const hits = (res.body.hits?.hits ?? []) as Array<{

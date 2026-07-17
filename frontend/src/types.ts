@@ -56,4 +56,31 @@ export interface SearchResponse {
   sort: SortOption;
   count: number;
   results: (CustomerResult | BaseResult)[];
+  explain?: ExplainPayload;
+}
+
+/** Dev-only "under the hood" inspector payload (present only when explain=true). */
+export interface ExplainPayload {
+  note: string;
+  authContext: {
+    userId: string;
+    role: Role;
+    customerId: string | null;
+    dealershipId: string | null;
+  };
+  validatedRequest: Record<string, unknown>;
+  inventoryQuery: { index: string; body: unknown };
+  agreementsQuery: { index: string; body: unknown } | null;
+  sample: {
+    rawCandidate: Record<string, unknown>;
+    redactedResult: Record<string, unknown>;
+    droppedFields: string[];
+    pricing: {
+      base_daily_rate: number;
+      discount_percent: number;
+      pricing_source: string;
+      effective_daily_rate: number;
+      agreement_applied: boolean;
+    } | null;
+  } | null;
 }

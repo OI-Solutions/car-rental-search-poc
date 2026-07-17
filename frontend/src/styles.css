@@ -104,6 +104,36 @@ h2 { font-size: 1rem; margin: 0 0 0.75rem; }
 .obj-explain-title { font-weight: 700; margin-bottom: 0.15rem; }
 @media (prefers-color-scheme: dark) { .obj-explain { background: #1b2740; border-color: #2f426b; } }
 
+/* Explain-mode toggle + "under the hood" inspector */
+.explain-toggle { margin: 0 0 1rem; font-weight: 600; }
+.hood { border-color: #b9a6e0; }
+@media (prefers-color-scheme: dark) { .hood { border-color: #573a7d; } }
+.hood-note {
+  background: #fff3d6; color: #6b4e00; border: 1px solid #e6c766;
+  padding: 0.4rem 0.6rem; border-radius: 5px; font-size: 0.82rem; margin: 0 0 0.75rem;
+}
+@media (prefers-color-scheme: dark) { .hood-note { background: #3a2f00; color: #ffe08a; border-color: #6b5600; } }
+.hood-steps { margin: 0; padding-left: 1.2rem; font-size: 0.9rem; }
+.hood-steps > li { margin-bottom: 0.9rem; }
+.hood-json {
+  background: #f3f5f8; border: 1px solid #dfe3e8; border-radius: 6px;
+  padding: 0.55rem 0.7rem; margin: 0.35rem 0 0; overflow-x: auto;
+  font-size: 0.78rem; line-height: 1.45;
+}
+@media (prefers-color-scheme: dark) { .hood-json { background: #14181e; border-color: #2c333d; } }
+.hood-diff { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.4rem; }
+@media (max-width: 720px) { .hood-diff { grid-template-columns: 1fr; } }
+.hood-col-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; opacity: 0.65; margin-bottom: 0.25rem; }
+.hood-fields { list-style: none; margin: 0; padding: 0; font-size: 0.78rem; line-height: 1.6; }
+.hood-fields code { font-weight: 600; }
+.hood-fields .dropped { opacity: 0.55; text-decoration: line-through; }
+.drop-tag { text-decoration: none; color: #b3261e; font-size: 0.68rem; font-weight: 700; margin-left: 0.2rem; }
+.hood-pricing {
+  margin-top: 0.4rem; padding: 0.5rem 0.7rem; background: #ecf7ef;
+  border: 1px solid #b9e3c6; border-radius: 6px; font-size: 0.9rem;
+}
+@media (prefers-color-scheme: dark) { .hood-pricing { background: #16321f; border-color: #2c5c3c; } }
+
 .checks { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; }
 .check { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.88rem; opacity: 0.95; }
 .check input { width: auto; }

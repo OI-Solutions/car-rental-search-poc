@@ -6,6 +6,7 @@ import { SearchControls } from "./components/SearchControls";
 import { Results } from "./components/Results";
 import { ProcurementSearch } from "./components/ProcurementSearch";
 import { DevDataNote } from "./components/DevDataNote";
+import { UnderTheHood } from "./components/UnderTheHood";
 
 const EMPTY_SEARCH: SearchRequest = { sort: "relevance" };
 
@@ -19,6 +20,7 @@ export function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<SearchMode>("basic");
+  const [explain, setExplain] = useState(false);
 
   const isCustomer = profile?.role === "customer_user";
 
@@ -51,7 +53,7 @@ export function App() {
     setLoading(true);
     setError(null);
     try {
-      setData(await search(req));
+      setData(await search(req, explain));
     } catch (e) {
       setError((e as Error).message);
       setData(null);
@@ -112,7 +114,16 @@ export function App() {
                 loading={loading}
                 showPersonalizedSort={!!isCustomer}
               />
+              <label className="check explain-toggle" title="Show the controlled query, raw→redacted diff, and pricing math for this search">
+                <input
+                  type="checkbox"
+                  checked={explain}
+                  onChange={(e) => setExplain(e.target.checked)}
+                />
+                🔍 Explain mode — show what happens under the hood (dev)
+              </label>
               <Results data={data} loading={loading} error={error} />
+              {data?.explain && <UnderTheHood explain={data.explain} />}
             </>
           ) : (
             <ProcurementSearch />

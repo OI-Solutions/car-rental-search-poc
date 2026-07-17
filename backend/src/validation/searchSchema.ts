@@ -17,6 +17,9 @@ export const searchSchema = z
     sort: z
       .enum(["relevance", "base_price_asc", "personalized_price_asc"])
       .default("relevance"),
+    // Dev-only: when true, the response includes an `explain` payload showing the
+    // controlled query, raw→redacted diff, and pricing math. Not a business input.
+    explain: z.boolean().optional(),
   })
   .strict();
 

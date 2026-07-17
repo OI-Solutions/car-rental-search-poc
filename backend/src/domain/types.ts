@@ -96,6 +96,32 @@ export interface SearchParams {
   vehicle_class?: string;
   city?: string;
   sort: SortOption;
+  explain?: boolean;
+}
+
+/**
+ * Dev-only diagnostic payload for the "under the hood" UI inspector. Shows the
+ * real controlled query, the raw→redacted field diff, and the pricing math for
+ * one sample result. A production API would never expose this to clients.
+ */
+export interface ExplainPayload {
+  note: string;
+  authContext: AuthContext;
+  validatedRequest: Record<string, unknown>;
+  inventoryQuery: { index: string; body: unknown };
+  agreementsQuery: { index: string; body: unknown } | null;
+  sample: {
+    rawCandidate: Record<string, unknown>;
+    redactedResult: Record<string, unknown>;
+    droppedFields: string[];
+    pricing: {
+      base_daily_rate: number;
+      discount_percent: number;
+      pricing_source: PricingSource;
+      effective_daily_rate: number;
+      agreement_applied: boolean;
+    } | null;
+  } | null;
 }
 
 /** Public shape of the authenticated identity returned to the UI (no secrets). */

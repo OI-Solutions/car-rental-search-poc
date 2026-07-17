@@ -42,9 +42,25 @@ export function DevDataNote() {
             for the identity switcher; <b>never indexed</b>, and no passwords exist.
           </li>
         </ul>
-        <p className="muted" style={{ marginBottom: 0 }}>
+        <p className="muted">
           Inventory and agreements are indexed in OpenSearch; users are not. Pricing
           in Basic Search is computed live from these agreements.
+        </p>
+        <p style={{ marginBottom: "0.2rem" }}>
+          <b>Procurement regions → dealerships</b> (illustrative grouping used only by
+          the Procurement mockup):
+        </p>
+        <ul style={{ marginTop: 0 }}>
+          <li>Chicago Metro → Chicago Central Fleet</li>
+          <li>North / Northwest Suburbs → Schaumburg Corporate Mobility</li>
+          <li>West Suburbs → Naperville Commercial Auto</li>
+          <li>Southwest Suburbs → Plainfield Business Rentals <b>+</b> Joliet Jobsite Vehicles</li>
+          <li>Central Illinois → <i>no current dealership (planned)</i></li>
+        </ul>
+        <p className="muted" style={{ marginBottom: 0 }}>
+          Only Southwest has two dealerships — the one place "split fulfillment" can
+          combine dealers within a single region. Joliet is flagged non-contracted, so
+          "Contracted only" excludes it.
         </p>
       </div>
     </details>

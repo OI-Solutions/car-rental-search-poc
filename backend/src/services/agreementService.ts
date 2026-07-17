@@ -19,15 +19,12 @@ function isoDate(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
 
-export async function getActiveAgreementsForCustomer(
-  customerId: string,
-  deps: AgreementDeps = {},
-): Promise<AgreementRecord[]> {
-  const { getOpenSearchClient } = await import("../opensearch/client.js");
-  const client: Client = deps.client ?? getOpenSearchClient();
-  const today = isoDate(deps.now ?? new Date());
-
-  const body = {
+/** The exact agreements request body — single source of truth, also surfaced by
+ * the dev "explain" inspector. Note the customer_id comes from the caller (the
+ * verified token), never from the client request. */
+export function buildAgreementBody(customerId: string, now: Date = new Date()): Record<string, unknown> {
+  const today = isoDate(now);
+  return {
     size: 100,
     _source: [
       "dealership_id",
@@ -48,6 +45,16 @@ export async function getActiveAgreementsForCustomer(
       },
     },
   };
+}
+
+export async function getActiveAgreementsForCustomer(
+  customerId: string,
+  deps: AgreementDeps = {},
+): Promise<AgreementRecord[]> {
+  const { getOpenSearchClient } = await import("../opensearch/client.js");
+  const client: Client = deps.client ?? getOpenSearchClient();
+
+  const body = buildAgreementBody(customerId, deps.now ?? new Date());
 
   const res = await client.search({ index: config.indexes.customerAgreements, body });
   const hits = (res.body.hits?.hits ?? []) as Array<{ _source: AgreementRecord }>;

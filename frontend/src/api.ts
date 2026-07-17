@@ -66,14 +66,14 @@ export async function fetchMeta(): Promise<SearchMeta> {
   return (await res.json()) as SearchMeta;
 }
 
-export async function search(req: SearchRequest): Promise<SearchResponse> {
+export async function search(req: SearchRequest, explain = false): Promise<SearchResponse> {
   const res = await fetch(`${BASE}/api/search`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`,
     },
-    body: JSON.stringify(req),
+    body: JSON.stringify(explain ? { ...req, explain: true } : req),
   });
   if (!res.ok) throw await asError(res);
   return (await res.json()) as SearchResponse;
