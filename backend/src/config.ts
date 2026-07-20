@@ -39,6 +39,16 @@ function bool(name: string, fallback: boolean): boolean {
  */
 export type SearchBackend = "opensearch" | "fixture";
 
+/**
+ * "basic" is the Phase 1 security-plugin username/password model. "sigv4" is
+ * AWS IAM request signing, required by Amazon OpenSearch Serverless (and also
+ * usable against a managed OpenSearch Service domain configured for IAM auth).
+ * AWS credentials themselves come from the standard SDK provider chain
+ * (AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY / AWS_SESSION_TOKEN env vars, or an
+ * instance/task role) — there is no separate app-specific credential shape.
+ */
+export type OpenSearchAuthMode = "basic" | "sigv4";
+
 export interface AppConfig {
   apiPort: number;
   corsOrigin: string;
@@ -47,9 +57,13 @@ export interface AppConfig {
   searchBackend: SearchBackend;
   opensearch: {
     node: string;
+    authMode: OpenSearchAuthMode;
     username: string;
     password: string;
     verifyCerts: boolean;
+    // sigv4 only:
+    region: string;
+    service: string;
   };
   indexes: {
     inventory: string;
@@ -61,6 +75,14 @@ function searchBackend(): SearchBackend {
   const v = str("SEARCH_BACKEND", "opensearch").trim().toLowerCase();
   if (v !== "opensearch" && v !== "fixture") {
     throw new Error(`Invalid SEARCH_BACKEND "${v}" — expected "opensearch" or "fixture"`);
+  }
+  return v;
+}
+
+function opensearchAuthMode(): OpenSearchAuthMode {
+  const v = str("OPENSEARCH_AUTH_MODE", "basic").trim().toLowerCase();
+  if (v !== "basic" && v !== "sigv4") {
+    throw new Error(`Invalid OPENSEARCH_AUTH_MODE "${v}" — expected "basic" or "sigv4"`);
   }
   return v;
 }
@@ -82,12 +104,17 @@ export function loadConfig(): AppConfig {
     jwtTtlSeconds: Number(str("JWT_TTL_SECONDS", "3600")),
     opensearch: {
       node: `${scheme}://${host}:${port}`,
+      authMode: opensearchAuthMode(),
       username: str("OPENSEARCH_USERNAME", "admin"),
       password:
         process.env.OPENSEARCH_PASSWORD ||
         process.env.OPENSEARCH_INITIAL_ADMIN_PASSWORD ||
         "",
       verifyCerts: bool("OPENSEARCH_VERIFY_CERTS", false),
+      region: str("OPENSEARCH_REGION", "us-east-1"),
+      // "aoss" for OpenSearch Serverless, "es" for a managed OpenSearch Service
+      // domain configured for IAM auth.
+      service: str("OPENSEARCH_SERVICE", "aoss"),
     },
     indexes: {
       inventory: "inventory",

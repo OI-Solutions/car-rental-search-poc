@@ -25,6 +25,18 @@ A working B2B car-rental search POC in two phases, plus a teaching/demo layer.
 - **Fixture backend**: `SEARCH_BACKEND=fixture` serves `data/*.json` from memory so
   the API runs with **no Docker / no cluster** (only free-text relevance is
   approximated). Everything above retrieval is the real code path.
+- **OpenSearch Serverless support**: `OPENSEARCH_AUTH_MODE=sigv4` (alongside the existing
+  `basic` mode) makes the retrieval client and the Python ingestion scripts authenticate
+  via AWS SigV4 instead of security-plugin username/password — required by Amazon
+  OpenSearch Serverless. Node uses `@opensearch-project/opensearch/aws-v3` +
+  `@aws-sdk/credential-provider-node`; Python uses `opensearchpy`'s `AWSV4SignerAuth` +
+  `boto3`. Two Serverless API gaps worth remembering: no `_cluster/health`/`GET /` (use
+  `indices.exists` for readiness checks instead), and index creation must omit an explicit
+  `settings` block (shard/replica counts aren't configurable there —
+  `scripts/create_indexes.py` strips it automatically in `sigv4` mode). A demo deployment
+  now uses this for genuine BM25 retrieval instead of the fixture approximation; private
+  deployment specifics (host, collection id, credentials) live in the git-ignored
+  `DEPLOYMENT-PRIVATE.md`, not here.
 
 Repo: `OI-Solutions/car-rental-search-poc` (public). Branch `main`.
 
@@ -65,6 +77,14 @@ Notes:
 - Verify: `cd backend && npm test`; `cd frontend && npm run build`.
 
 ## Next objective: try AWS serverless
+
+**Status update**: the retrieval-backend half of this (real Amazon OpenSearch Serverless
+instead of fixture mode) is done — see the "OpenSearch Serverless support" bullet above.
+The narrower path was chosen deliberately over the full rearchitecture below: an existing
+demo deployment was already live on a small always-on EC2 box (details in the git-ignored
+`DEPLOYMENT-PRIVATE.md`), so only the search backend was swapped, leaving hosting as-is.
+The Lambda/API Gateway/S3/CloudFront rearchitecture proposed below **remains undone** and
+is still a reasonable future direction if hosting itself needs to move off that box.
 
 Goal: host this serverless on AWS. The app is already factored to make this easy —
 `backend/src/app.ts` exports `createApp()` (no `listen`), and retrieval is behind a

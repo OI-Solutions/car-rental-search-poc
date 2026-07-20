@@ -15,6 +15,8 @@ Passwords / password hashes are never indexed; `users.json` is not ingested.
 
 from __future__ import annotations
 
+import os
+
 from opensearchpy import helpers
 
 from common import (
@@ -111,7 +113,12 @@ def bulk_index(client, index, docs):
         {"_op_type": "index", "_index": index, "_id": doc_id, "_source": source}
         for doc_id, source in docs
     ]
-    success, _ = helpers.bulk(client, actions, refresh=True)
+    # OpenSearch Serverless doesn't support the explicit `refresh` bulk param
+    # (indexing is near-real-time on its own); only pass it in basic-auth mode.
+    kwargs = {}
+    if os.getenv("OPENSEARCH_AUTH_MODE", "basic").strip().lower() != "sigv4":
+        kwargs["refresh"] = True
+    success, _ = helpers.bulk(client, actions, **kwargs)
     print(f"  {index}: indexed {success} documents")
     return success
 
