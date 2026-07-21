@@ -13,10 +13,9 @@ export interface SearchMeta {
   cities: string[];
 }
 
-export type SortOption = "relevance" | "base_price_asc" | "personalized_price_asc";
+export type SortOption = "base_price_asc" | "personalized_price_asc";
 
 export interface SearchRequest {
-  query?: string;
   vehicle_class?: string;
   city?: string;
   sort: SortOption;
