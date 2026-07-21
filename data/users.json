@@ -96,56 +96,112 @@
     "status": "inactive"
   },
   {
-    "user_id": "USR-CHI-D",
-    "email": "manager.chicago@example.test",
+    "user_id": "USR-D01",
+    "email": "fleet.az.phoenix@example.test",
     "role": "dealership_user",
     "customer_id": null,
-    "dealership_id": "DLR-CHI",
+    "dealership_id": "DLR-AZ-PHOENIX",
     "status": "active"
   },
   {
-    "user_id": "USR-PLN-D",
-    "email": "manager.plainfield@example.test",
+    "user_id": "USR-D02",
+    "email": "fleet.ca.los.angeles@example.test",
     "role": "dealership_user",
     "customer_id": null,
-    "dealership_id": "DLR-PLN",
+    "dealership_id": "DLR-CA-LOS-ANGELES",
     "status": "active"
   },
   {
-    "user_id": "USR-NAP-D",
-    "email": "manager.naperville@example.test",
+    "user_id": "USR-D03",
+    "email": "fleet.ca.san.diego@example.test",
     "role": "dealership_user",
     "customer_id": null,
-    "dealership_id": "DLR-NAP",
+    "dealership_id": "DLR-CA-SAN-DIEGO",
     "status": "active"
   },
   {
-    "user_id": "USR-JOL-D",
-    "email": "manager.joliet@example.test",
+    "user_id": "USR-D04",
+    "email": "fleet.fl.miami@example.test",
     "role": "dealership_user",
     "customer_id": null,
-    "dealership_id": "DLR-JOL",
+    "dealership_id": "DLR-FL-MIAMI",
     "status": "active"
   },
   {
-    "user_id": "USR-SCH-D",
-    "email": "manager.schaumburg@example.test",
+    "user_id": "USR-D05",
+    "email": "fleet.fl.orlando@example.test",
     "role": "dealership_user",
     "customer_id": null,
-    "dealership_id": "DLR-SCH",
+    "dealership_id": "DLR-FL-ORLANDO",
     "status": "active"
   },
   {
-    "user_id": "USR-CORP-001",
-    "email": "admin@corporate.example.test",
+    "user_id": "USR-D06",
+    "email": "fleet.ga.atlanta@example.test",
+    "role": "dealership_user",
+    "customer_id": null,
+    "dealership_id": "DLR-GA-ATLANTA",
+    "status": "active"
+  },
+  {
+    "user_id": "USR-D07",
+    "email": "fleet.hi.honolulu@example.test",
+    "role": "dealership_user",
+    "customer_id": null,
+    "dealership_id": "DLR-HI-HONOLULU",
+    "status": "active"
+  },
+  {
+    "user_id": "USR-D08",
+    "email": "fleet.nv.las.vegas@example.test",
+    "role": "dealership_user",
+    "customer_id": null,
+    "dealership_id": "DLR-NV-LAS-VEGAS",
+    "status": "active"
+  },
+  {
+    "user_id": "USR-D09",
+    "email": "fleet.or.portland@example.test",
+    "role": "dealership_user",
+    "customer_id": null,
+    "dealership_id": "DLR-OR-PORTLAND",
+    "status": "active"
+  },
+  {
+    "user_id": "USR-D10",
+    "email": "fleet.tx.austin@example.test",
+    "role": "dealership_user",
+    "customer_id": null,
+    "dealership_id": "DLR-TX-AUSTIN",
+    "status": "active"
+  },
+  {
+    "user_id": "USR-D11",
+    "email": "fleet.tx.houston@example.test",
+    "role": "dealership_user",
+    "customer_id": null,
+    "dealership_id": "DLR-TX-HOUSTON",
+    "status": "active"
+  },
+  {
+    "user_id": "USR-D12",
+    "email": "fleet.tx.san.antonio@example.test",
+    "role": "dealership_user",
+    "customer_id": null,
+    "dealership_id": "DLR-TX-SAN-ANTONIO",
+    "status": "active"
+  },
+  {
+    "user_id": "USR-ADM-01",
+    "email": "corporate.admin1@example.test",
     "role": "corporate_admin",
     "customer_id": null,
     "dealership_id": null,
     "status": "active"
   },
   {
-    "user_id": "USR-CORP-002",
-    "email": "analyst@corporate.example.test",
+    "user_id": "USR-ADM-02",
+    "email": "corporate.admin2@example.test",
     "role": "corporate_admin",
     "customer_id": null,
     "dealership_id": null,

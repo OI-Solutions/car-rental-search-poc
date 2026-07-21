@@ -1,42 +1,98 @@
 [
   {
-    "dealership_id": "DLR-CHI",
-    "name": "Chicago Central Fleet",
-    "city": "Chicago",
-    "state": "IL",
-    "latitude": 41.8781,
-    "longitude": -87.6298
+    "dealership_id": "DLR-AZ-PHOENIX",
+    "name": "Phoenix Fleet Center",
+    "city": "Phoenix",
+    "state": "AZ",
+    "latitude": 33.4523,
+    "longitude": -111.9945
   },
   {
-    "dealership_id": "DLR-PLN",
-    "name": "Plainfield Business Rentals",
-    "city": "Plainfield",
-    "state": "IL",
-    "latitude": 41.6322,
-    "longitude": -88.212
+    "dealership_id": "DLR-CA-LOS-ANGELES",
+    "name": "Los Angeles Fleet Center",
+    "city": "Los Angeles",
+    "state": "CA",
+    "latitude": 34.0098,
+    "longitude": -118.3847
   },
   {
-    "dealership_id": "DLR-NAP",
-    "name": "Naperville Commercial Auto",
-    "city": "Naperville",
-    "state": "IL",
-    "latitude": 41.7508,
-    "longitude": -88.1535
+    "dealership_id": "DLR-CA-SAN-DIEGO",
+    "name": "San Diego Fleet Center",
+    "city": "San Diego",
+    "state": "CA",
+    "latitude": 32.7763,
+    "longitude": -117.1631
   },
   {
-    "dealership_id": "DLR-JOL",
-    "name": "Joliet Jobsite Vehicles",
-    "city": "Joliet",
-    "state": "IL",
-    "latitude": 41.525,
-    "longitude": -88.0817
+    "dealership_id": "DLR-FL-MIAMI",
+    "name": "Miami Fleet Center",
+    "city": "Miami",
+    "state": "FL",
+    "latitude": 25.7894,
+    "longitude": -80.2434
   },
   {
-    "dealership_id": "DLR-SCH",
-    "name": "Schaumburg Corporate Mobility",
-    "city": "Schaumburg",
-    "state": "IL",
-    "latitude": 42.0334,
-    "longitude": -88.0834
+    "dealership_id": "DLR-FL-ORLANDO",
+    "name": "Orlando Fleet Center",
+    "city": "Orlando",
+    "state": "FL",
+    "latitude": 28.4484,
+    "longitude": -81.3303
+  },
+  {
+    "dealership_id": "DLR-GA-ATLANTA",
+    "name": "Atlanta Fleet Center",
+    "city": "Atlanta",
+    "state": "GA",
+    "latitude": 33.7711,
+    "longitude": -84.4089
+  },
+  {
+    "dealership_id": "DLR-HI-HONOLULU",
+    "name": "Honolulu Fleet Center",
+    "city": "Honolulu",
+    "state": "HI",
+    "latitude": 21.3069,
+    "longitude": -157.8513
+  },
+  {
+    "dealership_id": "DLR-NV-LAS-VEGAS",
+    "name": "Las Vegas Fleet Center",
+    "city": "Las Vegas",
+    "state": "NV",
+    "latitude": 36.1077,
+    "longitude": -115.2194
+  },
+  {
+    "dealership_id": "DLR-OR-PORTLAND",
+    "name": "Portland Fleet Center",
+    "city": "Portland",
+    "state": "OR",
+    "latitude": 45.5557,
+    "longitude": -122.6061
+  },
+  {
+    "dealership_id": "DLR-TX-AUSTIN",
+    "name": "Austin Fleet Center",
+    "city": "Austin",
+    "state": "TX",
+    "latitude": 30.2759,
+    "longitude": -97.7616
+  },
+  {
+    "dealership_id": "DLR-TX-HOUSTON",
+    "name": "Houston Fleet Center",
+    "city": "Houston",
+    "state": "TX",
+    "latitude": 29.8673,
+    "longitude": -95.4424
+  },
+  {
+    "dealership_id": "DLR-TX-SAN-ANTONIO",
+    "name": "San Antonio Fleet Center",
+    "city": "San Antonio",
+    "state": "TX",
+    "latitude": 29.5324,
+    "longitude": -98.5445
   }
 ]

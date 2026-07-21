@@ -44,15 +44,15 @@ describe("fixtureClient — denormalization", () => {
 
 describe("fixtureClient — filters", () => {
   it("scopes a dealership user to its own inventory", async () => {
-    const res = await runProtectedSearch(dealershipAuth("DLR-CHI"), { sort: "base_price_asc" }, { client, now: NOW });
+    const res = await runProtectedSearch(dealershipAuth("DLR-NV-LAS-VEGAS"), { sort: "base_price_asc" }, { client, now: NOW });
     expect(res.count).toBeGreaterThan(0);
-    expect(new Set(res.results.map((r) => r.dealership_name))).toEqual(new Set(["Chicago Central Fleet"]));
+    expect(new Set(res.results.map((r) => r.dealership_name))).toEqual(new Set(["Las Vegas Fleet Center"]));
   });
 
   it("cannot be escaped by a city filter naming another dealership's city", async () => {
     const res = await runProtectedSearch(
-      dealershipAuth("DLR-CHI"),
-      { city: "Naperville", sort: "base_price_asc" },
+      dealershipAuth("DLR-NV-LAS-VEGAS"),
+      { city: "Miami", sort: "base_price_asc" },
       { client, now: NOW },
     );
     expect(res.count).toBe(0);
@@ -78,10 +78,13 @@ describe("fixtureClient — text search", () => {
   it("ranks class matches above incidental description matches", async () => {
     const res = await runProtectedSearch(
       customerAuth("CUS-001"),
-      { query: "cargo van", sort: "relevance" },
+      { query: "minivan", sort: "relevance" },
       { client, now: NOW },
     );
-    expect((res.results[0] as CustomerResultDTO).vehicle_class).toBe("cargo_van");
+    // "minivan" matches the `minivan` class field (weight 2) exactly, outranking
+    // the incidental mention of "minivan" in those same models' descriptions —
+    // the class field, not prose, decides the top hit.
+    expect((res.results[0] as CustomerResultDTO).vehicle_class).toBe("minivan");
   });
 
   it("returns nothing for a query matching no document", async () => {

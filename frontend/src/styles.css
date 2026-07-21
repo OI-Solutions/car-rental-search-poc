@@ -133,6 +133,20 @@ h2 { font-size: 1rem; margin: 0 0 0.75rem; }
   border: 1px solid #b9e3c6; border-radius: 6px; font-size: 0.9rem;
 }
 @media (prefers-color-scheme: dark) { .hood-pricing { background: #16321f; border-color: #2c5c3c; } }
+.hood-scale { margin-top: 1rem; border-top: 1px solid #e3e3e3; padding-top: 0.75rem; }
+@media (prefers-color-scheme: dark) { .hood-scale { border-top-color: #2c333d; } }
+.hood-scale > summary { cursor: pointer; font-size: 0.9rem; }
+.hood-scale-table {
+  border-collapse: collapse; margin: 0.6rem 0; font-size: 0.8rem;
+  font-variant-numeric: tabular-nums; width: 100%;
+}
+.hood-scale-table th, .hood-scale-table td { border: 1px solid #dfe3e8; padding: 0.25rem 0.55rem; text-align: right; }
+.hood-scale-table th:first-child, .hood-scale-table td:first-child { text-align: left; }
+.hood-scale-table tr.hi td { background: #fde9de; font-weight: 600; }
+@media (prefers-color-scheme: dark) {
+  .hood-scale-table th, .hood-scale-table td { border-color: #2c333d; }
+  .hood-scale-table tr.hi td { background: #3a2318; }
+}
 
 .checks { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; }
 .check { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.88rem; opacity: 0.95; }

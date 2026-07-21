@@ -90,12 +90,54 @@ def main() -> int:
         else:
             raise AssertionError(f"Unknown role: {role}")
 
-    # Demonstrate an intentional price inversion:
-    # Joliet has the lowest SUV base rate ($84), but CUS-001's 28% Chicago
-    # discount makes Chicago's $92 SUV cost $66.24 versus Joliet's $84.
-    chi_personalized = 92.0 * (1 - 0.28)
-    joliet_no_discount = 84.0
-    assert chi_personalized < joliet_no_discount
+    # Demonstrate an intentional price inversion somewhere in the data: a case
+    # where the dealership with the lowest *base* rate for a model is not the
+    # cheapest once a customer's negotiated discount is applied. This is the
+    # core reason personalized search cannot just sort on base_daily_rate.
+    # Discounts are resolved dealership-wide here (the class-specific tiers only
+    # sharpen the effect), mirroring backend pricingService's fallback.
+    dealership_city = {d["dealership_id"]: d["city"] for d in dealerships}
+    wide_discount: dict[tuple[str, str], float] = {}
+    for row in agreements:
+        if row["agreement_status"] == "active" and row["vehicle_class"] is None:
+            key = (row["customer_id"], row["dealership_id"])
+            wide_discount[key] = max(wide_discount.get(key, 0.0), row["discount_percent"])
+
+    min_base: dict[tuple[str, str], float] = {}
+    for row in inventory:
+        key = (row["dealership_id"], row["vehicle_model_id"])
+        rate = row["base_daily_rate"]
+        if key not in min_base or rate < min_base[key]:
+            min_base[key] = rate
+
+    inversion = None
+    for customer_id in sorted(customer_ids):
+        dealers = sorted({d for (c, d) in wide_discount if c == customer_id})
+        if len(dealers) < 2:
+            continue
+        rates_by_model: dict[str, dict[str, float]] = defaultdict(dict)
+        for (dlr, model_id), rate in min_base.items():
+            if dlr in dealers:
+                rates_by_model[model_id][dlr] = rate
+        for model_id, per_dealer in rates_by_model.items():
+            if len(per_dealer) < 2:
+                continue
+            base_best = min(per_dealer, key=per_dealer.get)
+            def net(dlr: str) -> float:
+                return per_dealer[dlr] * (1 - wide_discount.get((customer_id, dlr), 0.0) / 100)
+            pers_best = min(per_dealer, key=net)
+            if base_best != pers_best:
+                inversion = (
+                    f"{customer_id}: {model_id} cheapest base at "
+                    f"{dealership_city[base_best]} (${per_dealer[base_best]:.2f}) but "
+                    f"cheapest personalized at {dealership_city[pers_best]} "
+                    f"(${net(pers_best):.2f} vs ${net(base_best):.2f})"
+                )
+                break
+        if inversion:
+            break
+
+    assert inversion is not None, "Expected at least one base-vs-personalized price inversion"
 
     print("Validation passed.")
     print(f"Dealerships: {len(dealerships)}")
@@ -104,10 +146,7 @@ def main() -> int:
     print(f"Customers: {len(customers)}")
     print(f"Agreements: {len(agreements)}")
     print(f"Users: {len(users)}")
-    print(
-        "Price inversion example: CUS-001 Chicago SUV "
-        f"${chi_personalized:.2f} < Joliet SUV ${joliet_no_discount:.2f}"
-    )
+    print(f"Price inversion example: {inversion}")
     return 0
 
 
