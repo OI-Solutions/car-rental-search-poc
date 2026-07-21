@@ -1,9 +1,19 @@
 {
   "query": {
     "bool": {
-      "filter": [{ "term": { "dealership_id": "DLR-CHI" } }]
+      "filter": [
+        {
+          "term": {
+            "dealership_id": "DLR-AZ-PHOENIX"
+          }
+        }
+      ]
     }
   },
-  "sort": [{ "customer_id": "asc" }],
+  "sort": [
+    {
+      "customer_id": "asc"
+    }
+  ],
   "size": 50
 }

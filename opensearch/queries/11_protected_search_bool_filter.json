@@ -1,0 +1,28 @@
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "multi_match": {
+            "query": "suv crew",
+            "fields": ["make", "model", "vehicle_class", "description"]
+          }
+        }
+      ],
+      "filter": [
+        { "term": { "vehicle_class": "suv" } },
+        { "term": { "dealership_city": "Las Vegas" } },
+        { "range": { "base_daily_rate": { "lte": 90 } } },
+        { "range": { "quantity_available": { "gt": 0 } } }
+      ],
+      "must_not": [{ "term": { "status": "unavailable" } }]
+    }
+  },
+  "sort": [{ "_score": "desc" }, { "base_daily_rate": "asc" }],
+  "_source": [
+    "inventory_id", "dealership_id", "dealership_name", "dealership_city",
+    "make", "model", "vehicle_class", "seats", "fuel_type",
+    "base_daily_rate", "status", "quantity_available"
+  ],
+  "size": 20
+}
