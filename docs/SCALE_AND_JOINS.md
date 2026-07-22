@@ -1,5 +1,12 @@
 # Parent/child vs denormalized — a cost audit at 2M rows
 
+> **The verdict:** the one-document (flat) layout wins on what matters most for a
+> search index — **read and query speed** — and pays for it in **storage and slower
+> updates**. The principle it points to: **shape each index around the retrieval
+> unit** — the thing a search returns (a ready-to-rank listing) — not around a tidy,
+> normalized entity model. That's why this POC runs several purpose-built indexes
+> instead of one.
+
 > **Premise:** for a read-heavy, centralized search over millions of rows, an
 > OpenSearch **parent/child `join`** is more expensive than **denormalization** on
 > every dimension that matters. This page proves it dimension by dimension — each
