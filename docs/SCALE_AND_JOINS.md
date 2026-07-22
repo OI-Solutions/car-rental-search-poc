@@ -193,9 +193,7 @@ Where flat wins (beyond read latency, which we don't quote precisely):
 - **Heap** — the join field loads global ordinals into heap, growing with the
   catalog; flat has no such cost.
 
-Parent/child's wins are narrow and infrequent (disk, plus the rare model-detail
-rename). Flat's are broad and constant (every read, everyday writes, and simpler
-operations).
+Parent/child's advantages are narrow but measurable: lower storage and cheaper updates to shared parent attributes. Flat's advantages are architectural and operational: simpler queries and writes, unconstrained shard distribution, no join-specific heap structures, and no routing dependency. For this workload, the frequently changing fields already belong to the listing itself, so parent/child's principal update advantage rarely applies.
 
 ## Reproduce
 
