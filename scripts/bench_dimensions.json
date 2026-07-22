@@ -1,0 +1,49 @@
+{
+  "generated_at": "2026-07-21T23:38:02Z",
+  "aggregation": {
+    "flat_ms": 9.0,
+    "flat_queries": 1,
+    "join_ms": 60.0,
+    "join_queries": 5,
+    "join_per_class": {
+      "car": 16.0,
+      "suv": 14.0,
+      "minivan": 10.0,
+      "truck": 10.0,
+      "van": 10.0
+    }
+  },
+  "memory": {
+    "flat_fielddata_bytes": 0,
+    "join_fielddata_bytes": 2368,
+    "join_fielddata_delta_bytes": 1480
+  },
+  "shard_skew": {
+    "flat": {
+      "shards": 3,
+      "min_docs": 666281,
+      "max_docs": 667013,
+      "skew_ratio": 1.0
+    },
+    "join": {
+      "shards": 3,
+      "min_docs": 640273,
+      "max_docs": 708621,
+      "skew_ratio": 1.11
+    }
+  },
+  "indexing": {
+    "bench_flat": {
+      "rows": 500000,
+      "seconds": 11.4,
+      "docs_per_sec": 43686,
+      "store_bytes": 99290490
+    },
+    "bench_join": {
+      "rows": 500000,
+      "seconds": 10.9,
+      "docs_per_sec": 45801,
+      "store_bytes": 98999946
+    }
+  }
+}

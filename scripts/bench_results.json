@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "generated_at": "2026-07-21T22:20:02Z",
+    "iterations": 50,
+    "city": "Las Vegas",
+    "flat_docs": 2000000,
+    "join_docs": 2000547,
+    "flat_store_bytes": 516897295,
+    "join_store_bytes": 391041789,
+    "fielddata_before_bytes": 1736,
+    "fielddata_after_bytes": 1736,
+    "fielddata_delta_bytes": 0
+  },
+  "stages": [
+    {
+      "stage": 0,
+      "label": "match_all (all inventory)",
+      "hits": 2000000,
+      "flat_mean": 0.8,
+      "flat_p95": 1.0,
+      "join_mean": 1.0,
+      "join_p95": 1.0,
+      "ratio": 1.2
+    },
+    {
+      "stage": 1,
+      "label": "+ class=suv",
+      "hits": 611042,
+      "flat_mean": 1.0,
+      "flat_p95": 1.0,
+      "join_mean": 13.5,
+      "join_p95": 14.4,
+      "ratio": 13.5
+    },
+    {
+      "stage": 2,
+      "label": "+ city",
+      "hits": 19599,
+      "flat_mean": 2.0,
+      "flat_p95": 3.9,
+      "join_mean": 2.4,
+      "join_p95": 3.0,
+      "ratio": 1.2
+    },
+    {
+      "stage": 3,
+      "label": "+ price<=80",
+      "hits": 10586,
+      "flat_mean": 2.0,
+      "flat_p95": 2.0,
+      "join_mean": 2.7,
+      "join_p95": 3.0,
+      "ratio": 1.4
+    },
+    {
+      "stage": 4,
+      "label": "+ seats>=7",
+      "hits": 10586,
+      "flat_mean": 1.9,
+      "flat_p95": 2.0,
+      "join_mean": 3.0,
+      "join_p95": 3.0,
+      "ratio": 1.6
+    }
+  ]
+}

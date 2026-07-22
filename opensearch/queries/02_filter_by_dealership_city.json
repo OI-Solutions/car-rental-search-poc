@@ -1,7 +1,13 @@
 {
   "query": {
     "bool": {
-      "filter": [{ "term": { "dealership_city": "Chicago" } }]
+      "filter": [
+        {
+          "term": {
+            "dealership_city": "Las Vegas"
+          }
+        }
+      ]
     }
   },
   "size": 50

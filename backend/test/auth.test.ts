@@ -47,11 +47,11 @@ describe("authentication & input validation (no OpenSearch required)", () => {
   });
 
   it("(#10) rejects a dealership_id injected into the search body", async () => {
-    const token = await tokenFor("USR-JOL-D");
+    const token = await tokenFor("USR-D01");
     const res = await request(app)
       .post("/api/search")
       .set("Authorization", `Bearer ${token}`)
-      .send({ dealership_id: "DLR-CHI" });
+      .send({ dealership_id: "DLR-NV-LAS-VEGAS" });
     expect(res.status).toBe(400);
   });
 

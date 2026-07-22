@@ -1,0 +1,24 @@
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "dealership_city": "Las Vegas" } },
+        { "range": { "base_daily_rate": { "lte": 80 } } },
+        {
+          "has_parent": {
+            "parent_type": "vehicle_model",
+            "query": {
+              "bool": {
+                "filter": [
+                  { "term": { "vehicle_class": "suv" } },
+                  { "range": { "seats": { "gte": 7 } } }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "size": 10
+}

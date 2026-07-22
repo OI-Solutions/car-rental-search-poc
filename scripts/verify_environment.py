@@ -19,8 +19,9 @@ from common import (
     load_source,
 )
 
-# Chicago dealership coordinates (for the geo-distance smoke test).
-CHICAGO_LAT, CHICAGO_LON = 41.8781, -87.6298
+# Las Vegas dealership coordinates (for the geo-distance smoke test). Las Vegas is
+# the largest metro in the Cornell-derived dataset, so it always has inventory.
+GEO_PROBE_LAT, GEO_PROBE_LON = 36.1699, -115.1398
 
 
 def check_counts(client) -> bool:
@@ -61,20 +62,20 @@ def smoke_queries(client) -> None:
     )
     print(f"available SUVs .......................... {res['hits']['total']['value']} hits")
 
-    # Geo-distance around Chicago (50km).
+    # Geo-distance around Las Vegas (50km).
     res = client.search(
         index=INDEX_INVENTORY,
         body={
             "query": {
                 "geo_distance": {
                     "distance": "50km",
-                    "dealership_location": {"lat": CHICAGO_LAT, "lon": CHICAGO_LON},
+                    "dealership_location": {"lat": GEO_PROBE_LAT, "lon": GEO_PROBE_LON},
                 }
             }
         },
         size=0,
     )
-    print(f"inventory within 50km of Chicago ........ {res['hits']['total']['value']} hits")
+    print(f"inventory within 50km of Las Vegas ...... {res['hits']['total']['value']} hits")
 
     # BM25 description search.
     res = client.search(

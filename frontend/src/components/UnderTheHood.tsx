@@ -102,6 +102,39 @@ export function UnderTheHood({ explain }: { explain: ExplainPayload }) {
           </li>
         )}
       </ol>
+
+      <details className="hood-scale">
+        <summary>
+          Why is retrieval <b>denormalized</b>, not parent/child? <span className="muted">(scale note)</span>
+        </summary>
+        <div className="hood-scale-body">
+          <p className="hood-note" style={{ marginTop: "0.5rem" }}>
+            This inspector runs on the small demo corpus. The modeling choice behind it
+            was measured on a <b>2,000,000-row</b> local benchmark: the same query and the
+            same results, stored two ways.
+          </p>
+          <table className="hood-scale-table">
+            <thead>
+              <tr><th>dimension</th><th>denorm</th><th>parent/child</th><th>cost</th></tr>
+            </thead>
+            <tbody>
+              <tr className="hi"><td>read — broad filter (<code>class=suv</code>)</td><td>1.0 ms</td><td>13.5 ms</td><td>13.5× slower</td></tr>
+              <tr><td>facet aggregation</td><td>9 ms · 1 query</td><td>60 ms · 5 queries</td><td>6.7× slower</td></tr>
+              <tr><td>shard balance</td><td>1.00</td><td>1.11 skew</td><td>worse</td></tr>
+              <tr className="win"><td>storage</td><td>517 MB</td><td>391 MB</td><td>join −24%</td></tr>
+            </tbody>
+          </table>
+          <p className="muted" style={{ fontSize: "0.82rem", lineHeight: 1.5 }}>
+            Filters prune ~99.5% of the space, so search over millions stays fast either
+            way. But any query on a <b>model attribute</b> pays a join tax: a broad
+            <code>class=suv</code> filter is <b>13.5× slower</b> and faceting needs{" "}
+            <b>5 queries instead of 1</b> (a child can’t group by a parent field).
+            Parent/child is only cheaper on storage (−24%) and one-time writes —
+            the cheapest costs, traded for the most frequent ones. Full method:{" "}
+            <code>docs/SCALE_AND_JOINS.md</code>.
+          </p>
+        </div>
+      </details>
     </div>
   );
 }

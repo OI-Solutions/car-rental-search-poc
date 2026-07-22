@@ -19,3 +19,4 @@ dist/
 
 # OS cruft
 .DS_Store
+data/source/
