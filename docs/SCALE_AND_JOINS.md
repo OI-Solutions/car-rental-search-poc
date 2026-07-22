@@ -22,23 +22,13 @@ benchmark asserts equal hit counts). They differ only in storage. Local single-n
 
 ## Part 1 — The data
 
-### From 5,851 real cars to 2,000,000
+**5k real car rentals from Kaggle
+([Cornell](https://www.kaggle.com/datasets/kushleshkumar/cornell-car-rental-dataset))
+were expanded to 2,000,000 listings** from a small set of reusable pieces:
 
-**What we started with:** 5,851 real car rentals from Kaggle (the
-[Cornell set](https://www.kaggle.com/datasets/kushleshkumar/cornell-car-rental-dataset)).
-Each row is one car — its make, model and type, daily price, and city. One row looks
-like: *Tesla Model X · SUV · 2019 · \$135/day · Seattle, WA*.
-
-**How `bench_generate_ingest.py` turns that into 2,000,000:**
-
-1. Pull out the **547 distinct car models**, and note each model's average real price.
-2. List the **1,017 cities**, and how busy each one was.
-3. Make **2,000,000 listings**. Each one = a random car model, dropped in a city
-   (busier cities more often) at one of 6 branch locations, priced at that model's
-   average ±30%, with a random year (2006–2020) and stock count (0–5).
-
-It's 2,000,000 random mixes of a real car, a real city, and a realistic price,
-spreading the 547 models across **~6,000 locations in 964 cities**.
+- **547 car models** and **964 cities** — both real, reused across the set.
+- each city holds several branch **locations** (~6,000 total).
+- each **listing** = one model at one location, with its own price, year, and stock.
 
 | | Cornell set | expansion |
 | --- | --- | --- |
@@ -46,7 +36,6 @@ spreading the 547 models across **~6,000 locations in 964 cities**.
 | car models | 547 | 547 |
 | rental locations | individual owners | 5,996 |
 | cities | 1,017 | 964 |
-| daily price | \$20–\$1,500 | \$15–\$1,539 (avg \$116) |
 
 ### The two indexes we search
 
@@ -163,24 +152,14 @@ Same answer either way (cheapest car \$15, SUV \$22, minivan \$24, truck \$25, v
 
 ## Part 3 — Customer pricing lives outside the index
 
-Pricing is per-customer: the same listing costs different amounts for different
-customers, via negotiated agreements. It's many-to-many (customer × dealership ×
-class) and it changes constantly — so it fits the inventory index neither
-denormalized (that's inventory × customers, re-indexed on every price change) nor as
-parent/child (one parent per child, and still re-crossed on every read).
+Pricing is per-customer and changes constantly — many-to-many (customer × dealership
+× class), so it fits the inventory index neither denormalized (inventory × customers)
+nor as parent/child (one parent, still re-crossed per read).
 
-So the app keeps it out of the index. On a search it runs a **second, small
-OpenSearch query** — `customer_agreements` filtered to this customer's active
-agreements — and then, in application code, applies those discounts to the listings
-it's about to return (`searchService` → `agreementService` → `pricingService`): for
-each result, effective price = base × (1 − the applicable discount). It runs on the
-*one page* of results on screen, not the corpus, and the inventory index is untouched
-when prices change.
-
-That's the shape throughout: the index stays a plain retrieval layer, and the
-relational, per-customer, fast-changing parts stay in the app, applied to the handful
-of results the user actually sees. The pieces that don't fit a search document don't
-get forced into one.
+So it stays out of the index. Each search runs a **second, small query** against
+`customer_agreements` for this customer's active discounts, and the app applies them
+to the results it returns — effective price = base × (1 − discount), over the one page
+on screen, not the corpus. Prices change without touching the inventory index.
 
 ---
 
