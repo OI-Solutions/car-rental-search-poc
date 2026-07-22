@@ -1,14 +1,10 @@
 # Denormalized vs parent/child — a search-modeling audit at 2M rows
 
-> **The verdict:** a search index is a **read model, not a database** — a
-> denormalized snapshot shaped for finding and ranking, not a normalized system of
-> record. Denormalize the stable, read-hot relationships into the thing you retrieve
-> (a ready-to-rank listing), so every search reads **one document**; keep your
-> normalized, relational, and volatile data (customers, negotiated pricing) in their
-> own stores and overlay them per request. Parent/child normalizes *inside* the
-> index — the wrong layer — so every read re-crosses a join that flat precomputed
-> once, at write time. And the more complex the data gets (see Part 3), the more that
-> layering pays off.
+> Flat keeps each listing as **one finished document**, so a search reads it
+> directly. Parent/child splits the car's details into a separate record and
+> **rejoins them on every query**. This page walks three real searches, then customer
+> pricing, to show what that split costs on reads — and the storage and write costs
+> flat pays in return.
 
 Two indexes hold the same 2,000,000 cars and return the **same results** (the
 benchmark asserts equal hit counts). They differ only in storage. Local single-node
@@ -165,35 +161,26 @@ Same answer either way (cheapest car \$15, SUV \$22, minivan \$24, truck \$25, v
 
 ---
 
-## Part 3 — What about complex data, like customer pricing?
+## Part 3 — Customer pricing lives outside the index
 
-This is where the read-model principle pays off — and where **both** in-index models
-break, which is the point.
+Pricing is per-customer: the same listing costs different amounts for different
+customers, via negotiated agreements. It's many-to-many (customer × dealership ×
+class) and it changes constantly — so it fits the inventory index neither
+denormalized (that's inventory × customers, re-indexed on every price change) nor as
+parent/child (one parent per child, and still re-crossed on every read).
 
-Pricing is **per-customer**: the same listing has a different price for every
-customer, via negotiated agreements. That relationship is **many-to-many** (customer
-× dealership × class) and **volatile** (it changes on every negotiation).
+So the app keeps it out of the index. On a search it runs a **second, small
+OpenSearch query** — `customer_agreements` filtered to this customer's active
+agreements — and then, in application code, applies those discounts to the listings
+it's about to return (`searchService` → `agreementService` → `pricingService`): for
+each result, effective price = base × (1 − the applicable discount). It runs on the
+*one page* of results on screen, not the corpus, and the inventory index is untouched
+when prices change.
 
-- You **can't denormalize** it onto the listing — that's inventory × customers, a
-  combinatorial explosion, re-indexed on every price change.
-- You **can't parent/child** it either — parent/child is one-to-many (one parent per
-  child); it can't express customer × dealership × class, and it would still be
-  re-crossed on every read.
-
-So the POC does **neither**. Pricing lives in its **own small index**
-(`customer_agreements`), and the app **overlays** it at request time: one tiny query
-for *this* customer's handful of agreements, applied to the *one page* of results the
-user sees (`searchService` → `agreementService` → `pricingService`). Cheap, bounded,
-and **the search index never changes when pricing rules change**.
-
-**The lesson:** as data gets more complex, don't cram the complexity into the search
-index. Keep the index a simple, fast retrieval layer, and push the relational,
-volatile, tenant-scoped concerns to the application, applied to the small result set.
-Flat + overlay **insulates** the index from complexity. Parent/child does the
-opposite — it pulls relational structure *into* the index, where it compounds (more
-joins, more re-indexing, more query-time cost) and still can't model the
-relationships that actually matter, like pricing. **More complexity is an argument
-*for* the layered flat design, not against it.**
+That's the shape throughout: the index stays a plain retrieval layer, and the
+relational, per-customer, fast-changing parts stay in the app, applied to the handful
+of results the user actually sees. The pieces that don't fit a search document don't
+get forced into one.
 
 ---
 
@@ -206,20 +193,30 @@ The two things that are **exact and reproducible**:
 | storage on disk | ~510 MB | ~385 MB | **join −24%** |
 | result counts (Search 2 ladder) | 2,000,000 → 10,586 | identical | exact both ways |
 
-Where parent/child genuinely wins (the honest trade-off):
+Where parent/child genuinely wins:
 - **Storage / indexing** — child docs drop the repeated car fields, so the index is
   ~24% smaller and ingests a touch faster. Disk is the cheapest resource.
-- **Updates** — changing a car attribute is one edit on parent/child vs re-indexing
-  every matching listing on flat. Only matters if car attributes churn; here
-  `make`/`class`/`seats` are effectively static.
+- **One narrow write case** — if a *shared car detail* changes (rename a model), it's
+  one edit vs re-indexing that model's listings. But `make`/`class`/`seats` are
+  reference data — they don't change.
 
 Where flat wins (beyond read latency, which we don't quote precisely):
+- **Everyday writes** — the updates that actually happen (a listing's price, stock,
+  status) are a single-doc write in *both* models, since they live on the listing. No
+  advantage to parent/child there.
+- **Operability** — flat writes are plain `index` calls; parent/child needs `routing`
+  on every write, a parent to exist first, a join field in the mapping, and routing
+  preserved through reindex/backup. Flat is simpler to run.
 - **Query shape** — plain `term`/`range`/`terms` vs `has_parent`/`children`/
   `inner_hits`.
 - **Shard balance** — flat hashes evenly; parent/child routes children to their
   parent's shard, so shard sizes track model popularity (skew, hot-shard risk).
 - **Heap** — the join field loads global ordinals into heap, growing with the
   catalog; flat has no such cost.
+
+Parent/child's wins are narrow and infrequent (disk, plus the rare model-detail
+rename). Flat's are broad and constant (every read, everyday writes, and simpler
+operations).
 
 ## Reproduce
 
