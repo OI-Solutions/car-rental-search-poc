@@ -115,22 +115,22 @@ export function UnderTheHood({ explain }: { explain: ExplainPayload }) {
           </p>
           <table className="hood-scale-table">
             <thead>
-              <tr><th>filter</th><th>rows</th><th>flat</th><th>join</th><th>join÷flat</th></tr>
+              <tr><th>dimension</th><th>denorm</th><th>parent/child</th><th>cost</th></tr>
             </thead>
             <tbody>
-              <tr><td>all inventory</td><td>2,000,000</td><td>0.8 ms</td><td>1.0 ms</td><td>1.2×</td></tr>
-              <tr className="hi"><td>+ class=suv</td><td>611,042</td><td>1.0 ms</td><td>13.5 ms</td><td>13.5×</td></tr>
-              <tr><td>+ city</td><td>19,599</td><td>2.0 ms</td><td>2.4 ms</td><td>1.2×</td></tr>
-              <tr><td>+ price ≤ 80</td><td>10,586</td><td>2.0 ms</td><td>2.7 ms</td><td>1.4×</td></tr>
+              <tr className="hi"><td>read — broad filter (<code>class=suv</code>)</td><td>1.0 ms</td><td>13.5 ms</td><td>13.5× slower</td></tr>
+              <tr><td>facet aggregation</td><td>9 ms · 1 query</td><td>60 ms · 5 queries</td><td>6.7× slower</td></tr>
+              <tr><td>shard balance</td><td>1.00</td><td>1.11 skew</td><td>worse</td></tr>
+              <tr className="win"><td>storage</td><td>517 MB</td><td>391 MB</td><td>join −24%</td></tr>
             </tbody>
           </table>
           <p className="muted" style={{ fontSize: "0.82rem", lineHeight: 1.5 }}>
             Filters prune ~99.5% of the space, so search over millions stays fast either
-            way. But a broad filter on a <b>model attribute</b> (<code>class=suv</code>)
-            forces the parent/child model to resolve parent→child across all 611k matches
-            — <b>13.5× slower</b>. The flat index answers it as one <code>term</code>.
-            Denormalization pays for that read speed in storage (<b>+32%</b>: 517 vs 391 MB),
-            a bill this read-heavy, static-model workload is happy to pay. Full method:{" "}
+            way. But any query on a <b>model attribute</b> pays a join tax: a broad
+            <code>class=suv</code> filter is <b>13.5× slower</b> and faceting needs{" "}
+            <b>5 queries instead of 1</b> (a child can’t group by a parent field).
+            Parent/child is only cheaper on storage (−24%) and one-time writes —
+            the cheapest costs, traded for the most frequent ones. Full method:{" "}
             <code>docs/SCALE_AND_JOINS.md</code>.
           </p>
         </div>
