@@ -25,6 +25,13 @@ its tests never touch `bench_*`.
 
 ## The example documents (the whole difference in two records)
 
+Each record is **one vehicle offered at one dealership**. The flat version keeps
+that whole listing in a single document — the dealership and city it's at, and what
+the vehicle actually is (make, model, class, seats) — all in one place. The
+parent/child version pulls the vehicle's details out into a separate "parent"
+record and leaves the listing holding only a pointer to it, so anything asking about
+the vehicle itself has to look in two places.
+
 **Flat** — one self-contained doc; model attributes (`make`…`transmission`) are inline:
 
 ```json
@@ -99,10 +106,33 @@ join is never cheaper — 1.6× even fully filtered.
 
 ### 2. Aggregation / faceting (6.7×, and it takes 5 queries)
 
-Facets ("how many available units per class?") are one `terms` aggregation on the
-flat index. On parent/child, `vehicle_class` lives on the parent, so a child
-aggregation **can't group by it** — you issue one `has_parent` query per class and
-stitch the totals. 9 ms/1 query becomes 60 ms/5 queries.
+**Walk it through.** Picture the sidebar count a user expects: *how many available
+vehicles of each type — car, SUV, minivan, truck, van?*
+
+- **Flat — you ask once.** Every listing already carries its own `vehicle_class`, so
+  OpenSearch groups all 2,000,000 rows by class and sums the available quantity in a
+  single pass. **≈ 9 ms, 1 query.**
+- **Parent/child — you ask five times.** The class lives on the *parent* record, so
+  the listings can't be grouped by it in one go. You ask class by class — "how many
+  available cars?", then SUVs, minivans, trucks, vans — each a `has_parent` join —
+  then add the five answers together yourself. **≈ 60 ms, 5 queries.**
+
+```json
+// flat — one query, one pass
+{ "size": 0,
+  "query": { "bool": { "filter": [ { "term": { "status": "available" } } ] } },
+  "aggs": { "by_class": { "terms": { "field": "vehicle_class" },
+            "aggs": { "units": { "sum": { "field": "quantity_available" } } } } } }
+```
+```json
+// join — repeat once per class, then sum client-side
+{ "size": 0,
+  "query": { "bool": { "filter": [
+    { "term": { "status": "available" } },
+    { "has_parent": { "parent_type": "vehicle_model",
+                      "query": { "term": { "vehicle_class": "suv" } } } } ] } },
+  "aggs": { "units": { "sum": { "field": "quantity_available" } } } }
+```
 
 ```json
 // flat — one query, one pass
