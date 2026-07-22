@@ -8,7 +8,7 @@ import { ProcurementSearch } from "./components/ProcurementSearch";
 import { DevDataNote } from "./components/DevDataNote";
 import { UnderTheHood } from "./components/UnderTheHood";
 
-const EMPTY_SEARCH: SearchRequest = { sort: "relevance" };
+const EMPTY_SEARCH: SearchRequest = { sort: "base_price_asc" };
 
 type SearchMode = "basic" | "procurement";
 
@@ -41,7 +41,7 @@ export function App() {
       setData(null);
       // Personalized sort only makes sense for customer users.
       if (p.role !== "customer_user" && req.sort === "personalized_price_asc") {
-        setReq({ ...req, sort: "relevance" });
+        setReq({ ...req, sort: "base_price_asc" });
       }
     } catch (e) {
       setError((e as Error).message);
@@ -105,6 +105,14 @@ export function App() {
 
           {mode === "basic" ? (
             <>
+              <p className="callout">
+                Every search here runs through real per-tenant authorization: your
+                identity comes from a signed token (never the request), OpenSearch
+                queries are built server-side with a mandatory tenant filter, and
+                personalized pricing + field redaction happen before results reach
+                the browser. Toggle <b>Inspect this search</b> below to see each
+                step with the real data from your last search.
+              </p>
               <SearchControls
                 meta={meta}
                 value={req}
@@ -114,14 +122,15 @@ export function App() {
                 loading={loading}
                 showPersonalizedSort={!!isCustomer}
               />
-              <label className="check explain-toggle" title="Show the controlled query, raw→redacted diff, and pricing math for this search">
-                <input
-                  type="checkbox"
-                  checked={explain}
-                  onChange={(e) => setExplain(e.target.checked)}
-                />
-                🔍 Explain mode — show what happens under the hood (dev)
-              </label>
+              <button
+                type="button"
+                className={explain ? "inspect-toggle active" : "inspect-toggle"}
+                aria-pressed={explain}
+                onClick={() => setExplain(!explain)}
+                title="Show the controlled query, raw→redacted diff, and pricing math for this search"
+              >
+                🔍 {explain ? "Inspecting this search" : "Inspect this search"}
+              </button>
               <Results data={data} loading={loading} error={error} />
               {data?.explain && <UnderTheHood explain={data.explain} />}
             </>

@@ -13,7 +13,14 @@ let osUp = false;
 
 beforeAll(async () => {
   try {
-    await getOpenSearchClient().cluster.health({}, { requestTimeout: 3000 });
+    // Neither `.cluster.health()` nor `.info()` (GET /) exist on OpenSearch
+    // Serverless (both 404) — checking a real index is the one probe that
+    // works against a Phase 1 cluster and Serverless alike. A generous timeout
+    // absorbs a NextGen collection's cold-start-from-zero delay.
+    await getOpenSearchClient().indices.exists(
+      { index: "dealerships" },
+      { requestTimeout: 30000 },
+    );
     osUp = true;
   } catch {
     osUp = false;

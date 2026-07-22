@@ -105,7 +105,18 @@ h2 { font-size: 1rem; margin: 0 0 0.75rem; }
 @media (prefers-color-scheme: dark) { .obj-explain { background: #1b2740; border-color: #2f426b; } }
 
 /* Explain-mode toggle + "under the hood" inspector */
-.explain-toggle { margin: 0 0 1rem; font-weight: 600; }
+.inspect-toggle {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.55rem 1rem; margin: 0 0 1rem; font-weight: 700; font-size: 0.9rem;
+  border: 1px solid #b9a6e0; border-radius: 8px; background: #f7f3fc; color: #5a2b8c;
+}
+.inspect-toggle:hover { background: #efe0ff; }
+.inspect-toggle.active { background: #5a2b8c; color: #fff; border-color: #5a2b8c; }
+@media (prefers-color-scheme: dark) {
+  .inspect-toggle { background: #241a33; color: #d5bdf0; border-color: #573a7d; }
+  .inspect-toggle:hover { background: #3a2358; }
+  .inspect-toggle.active { background: #7d4fc4; color: #fff; border-color: #7d4fc4; }
+}
 .hood { border-color: #b9a6e0; }
 @media (prefers-color-scheme: dark) { .hood { border-color: #573a7d; } }
 .hood-note {

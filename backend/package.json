@@ -16,6 +16,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@aws-sdk/credential-provider-node": "^3.658.0",
     "@opensearch-project/opensearch": "^2.13.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

@@ -8,8 +8,19 @@ Idempotent by default: an index that already exists is left untouched. Pass
 from __future__ import annotations
 
 import argparse
+import os
 
 from common import ALL_INDEXES, MAPPINGS_DIR, get_client, load_json
+
+# OpenSearch Serverless manages sharding/replication itself and rejects an
+# explicit "settings" block (e.g. number_of_shards/number_of_replicas) on index
+# creation. The mapping files under opensearch/mappings/ are shared with the
+# Phase 1 local Docker cluster, which does need those settings, so strip them
+# here rather than fork the mapping files.
+def _body_for_backend(body: dict) -> dict:
+    if os.getenv("OPENSEARCH_AUTH_MODE", "basic").strip().lower() == "sigv4":
+        return {k: v for k, v in body.items() if k != "settings"}
+    return body
 
 
 def main() -> int:
@@ -24,7 +35,7 @@ def main() -> int:
     client = get_client()
 
     for index in ALL_INDEXES:
-        body = load_json(MAPPINGS_DIR / f"{index}.json")
+        body = _body_for_backend(load_json(MAPPINGS_DIR / f"{index}.json"))
         exists = client.indices.exists(index=index)
 
         if exists and args.force:

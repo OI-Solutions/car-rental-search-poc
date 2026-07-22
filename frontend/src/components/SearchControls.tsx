@@ -1,7 +1,6 @@
 import type { SearchMeta, SearchRequest, SortOption } from "../types";
 
 const SORTS: { value: SortOption; label: string }[] = [
-  { value: "relevance", label: "Relevance" },
   { value: "base_price_asc", label: "Base price (low → high)" },
   { value: "personalized_price_asc", label: "Personalized price (low → high)" },
 ];
@@ -32,16 +31,6 @@ export function SearchControls({
     <div className="card">
       <h2>Search</h2>
       <div className="row">
-        <div className="field" style={{ flex: "2 1 220px" }}>
-          <label htmlFor="q">Text</label>
-          <input
-            id="q"
-            placeholder="e.g. cargo, crew, jobsite…"
-            value={value.query ?? ""}
-            onChange={(e) => set({ query: e.target.value })}
-            onKeyDown={(e) => e.key === "Enter" && onSearch()}
-          />
-        </div>
         <div className="field">
           <label htmlFor="vc">Vehicle class</label>
           <select
