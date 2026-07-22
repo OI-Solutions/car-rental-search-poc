@@ -1,16 +1,26 @@
-# Parent/child vs denormalized — a cost audit at 2M rows
+# Denormalized vs parent/child — a search-modeling audit at 2M rows
 
-> **The verdict:** the one-document (flat) layout wins on what matters most for a
-> search index — **read and query speed** — and pays for it in **storage and slower
-> updates**. The principle it points to: **shape each index around the retrieval
-> unit** — the thing a search returns (a ready-to-rank listing) — not around a tidy,
-> normalized entity model. That's why this POC runs several purpose-built indexes
-> instead of one.
+> **The verdict:** a search index is a **read model, not a database** — a
+> denormalized snapshot shaped for finding and ranking, not a normalized system of
+> record. Denormalize the stable, read-hot relationships into the thing you retrieve
+> (a ready-to-rank listing), so every search reads **one document**; keep your
+> normalized, relational, and volatile data (customers, negotiated pricing) in their
+> own stores and overlay them per request. Parent/child normalizes *inside* the
+> index — the wrong layer — so every read re-crosses a join that flat precomputed
+> once, at write time. And the more complex the data gets (see Part 3), the more that
+> layering pays off.
 
 Two indexes hold the same 2,000,000 cars and return the **same results** (the
-benchmark asserts equal hit counts). They differ only in storage. Numbers are
-server-side `took` on a local single-node cluster; the app and its tests never touch
-these `bench_*` indexes. Reproduce with the commands at the end.
+benchmark asserts equal hit counts). They differ only in storage. Local single-node
+`bench_*` indexes, never touched by the app.
+
+> **A note on the numbers.** Storage and result counts below are **exact and
+> reproducible**. Latency is **directional only**: on a single-node laptop cluster,
+> sub-100 ms timings are dominated by GC and cache noise — the same query's
+> flat-vs-join ratio swung from ~2× to ~13× across runs — so we do **not** quote a
+> precise multiple. What every run agreed on: parent/child was **slower** on any read
+> that touches a car attribute, because it does strictly more work. The direction is
+> guaranteed; the magnitude is environment-dependent.
 
 ---
 
@@ -31,9 +41,8 @@ like: *Tesla Model X · SUV · 2019 · \$135/day · Seattle, WA*.
    (busier cities more often) at one of 6 branch locations, priced at that model's
    average ±30%, with a random year (2006–2020) and stock count (0–5).
 
-It's 2,000,000 random mixes of a real car, a
-real city, and a realistic price, spreading the 547 models across **~6,000 locations
-in 964 cities**.
+It's 2,000,000 random mixes of a real car, a real city, and a realistic price,
+spreading the 547 models across **~6,000 locations in 964 cities**.
 
 | | Cornell set | expansion |
 | --- | --- | --- |
@@ -70,8 +79,8 @@ The same car, stored both ways:
   "base_daily_rate": 50, "status": "limited", "rel": { "parent": "VM-VW-PASSAT" } }
 ```
 
-That split — car details off the listing — is the root cause of every read cost
-below: any query touching a car attribute now needs a **join**.
+That split — car details off the listing — is why parent/child re-crosses a join on
+every read below. Flat did that join **once, at write time**.
 
 ---
 
@@ -79,8 +88,8 @@ below: any query touching a car attribute now needs a **join**.
 
 ### Search 1: all SUVs
 
-The simplest search on a car attribute. Flat reads the type off each listing;
-parent/child joins out to the car records — and there are 611,000 SUVs to join.
+Flat reads the type straight off each listing — one lookup. Parent/child has to
+resolve the join to the 611,000 SUVs' car records. Same result, strictly more work.
 
 ```json
 // FLAT
@@ -92,15 +101,27 @@ parent/child joins out to the car records — and there are 611,000 SUVs to join
                              "query": { "term": { "vehicle_class": "suv" } } } } }
 ```
 
-**1.0 ms flat vs 13.5 ms parent/child — 13.5× slower.**
+There is no way to filter listings by a car attribute without the `has_parent` join —
+so parent/child is always doing extra work here, and was slower on every run.
 
 ### Search 2: narrow it down — available SUVs in Las Vegas under \$80
 
-A real search adds filters. Each one shrinks the results, so both layouts get fast —
-but parent/child stays behind at every step, because the SUV filter is still a join.
+A real search adds filters. Each one shrinks the result set; the counts are identical
+either way (this is the reproducible part):
+
+| filter | results |
+| --- | ---: |
+| all inventory | 2,000,000 |
+| SUVs | 611,042 |
+| + Las Vegas | 19,599 |
+| + under \$80 | 10,586 |
+
+Filters prune ~99.5% of the space, so both layouts get fast once narrowed. But the
+SUV filter is still a `has_parent` join for parent/child at every step — it is never
+cheaper than flat, only less expensive in absolute terms as the set shrinks.
 
 ```json
-// FLAT
+// FLAT — every clause is a plain filter on the listing
 { "query": { "bool": { "filter": [
   { "term":  { "vehicle_class": "suv" } },
   { "term":  { "dealership_city": "Las Vegas" } },
@@ -108,7 +129,7 @@ but parent/child stays behind at every step, because the SUV filter is still a j
   { "range": { "quantity_available": { "gt": 0 } } } ] } } }
 ```
 ```json
-// PARENT/CHILD — the city/price/stock filters stay on the listing; the type filter becomes a join
+// PARENT/CHILD — city/price/stock stay on the listing; the type filter becomes a join
 { "query": { "bool": { "filter": [
   { "term":  { "dealership_city": "Las Vegas" } },
   { "range": { "base_daily_rate": { "lte": 80 } } },
@@ -117,24 +138,13 @@ but parent/child stays behind at every step, because the SUV filter is still a j
                     "query": { "term": { "vehicle_class": "suv" } } } } ] } } }
 ```
 
-| filter | results | flat | parent/child |
-| --- | ---: | ---: | ---: |
-| all inventory | 2,000,000 | 0.8 ms | 1.0 ms |
-| SUVs | 611,042 | 1.0 ms | **13.5 ms** |
-| + Las Vegas | 19,599 | 2.0 ms | 2.4 ms |
-| + under \$80 | 10,586 | 2.0 ms | 2.7 ms |
-
-Filters prune the space by ~99.5%, so once narrowed both are fast — but the join is
-never cheaper.
-
 ### Search 3: cheapest rate for each type
 
-A filter panel wants the lowest price per type. On the flat layout it's one plain
-aggregation — group listings by their own type, take the min. On parent/child the
-type lives on the car record, not the listing, so the aggregation has to cross the
-join. It **can** still be one query — the `children` aggregation buckets the car
-records by type, then descends to their listings for the min — but it pays the join
-tax either way.
+Flat groups listings by their own type and takes the min — one plain aggregation. On
+parent/child the type is on the car record, so the aggregation must cross the join. It
+**can** be one query (the `children` aggregation), so "you need N queries" is *not*
+the argument — but it still crosses the join, so it's still slower. The cost is the
+join, not the query count.
 
 ```json
 // FLAT — group listings by their own type
@@ -143,7 +153,7 @@ tax either way.
     "aggs": { "cheapest": { "min": { "field": "base_daily_rate" } } } } } }
 ```
 ```json
-// PARENT/CHILD — one query, but it crosses the join: bucket car records by type, descend to their listings
+// PARENT/CHILD — one query, but it crosses the join: bucket car records by type, descend to listings
 { "size": 0, "aggs": { "by_type": {
     "terms": { "field": "vehicle_class" },
     "aggs": { "listings": { "children": { "type": "inventory" },
@@ -151,46 +161,74 @@ tax either way.
 ```
 
 Same answer either way (cheapest car \$15, SUV \$22, minivan \$24, truck \$25, van
-\$25), but crossing the join costs **~7× more** (≈10 ms flat vs ≈70 ms). And it's the
-*join* that costs, not the query count — writing it as five `has_parent` queries (one
-per type) lands in the same ballpark (≈58 ms). Flat never crosses a join, because the
-type is already on the listing.
+\$25).
 
 ---
 
-## Subnotes — the other costs
+## Part 3 — What about complex data, like customer pricing?
 
-Being honest about the trade: parent/child wins on storage and one-time writes (the
-cheapest, least-frequent costs), and loses on a couple more operational dimensions.
+This is where the read-model principle pays off — and where **both** in-index models
+break, which is the point.
 
-| and also… | Flat | Parent/child | |
+Pricing is **per-customer**: the same listing has a different price for every
+customer, via negotiated agreements. That relationship is **many-to-many** (customer
+× dealership × class) and **volatile** (it changes on every negotiation).
+
+- You **can't denormalize** it onto the listing — that's inventory × customers, a
+  combinatorial explosion, re-indexed on every price change.
+- You **can't parent/child** it either — parent/child is one-to-many (one parent per
+  child); it can't express customer × dealership × class, and it would still be
+  re-crossed on every read.
+
+So the POC does **neither**. Pricing lives in its **own small index**
+(`customer_agreements`), and the app **overlays** it at request time: one tiny query
+for *this* customer's handful of agreements, applied to the *one page* of results the
+user sees (`searchService` → `agreementService` → `pricingService`). Cheap, bounded,
+and **the search index never changes when pricing rules change**.
+
+**The lesson:** as data gets more complex, don't cram the complexity into the search
+index. Keep the index a simple, fast retrieval layer, and push the relational,
+volatile, tenant-scoped concerns to the application, applied to the small result set.
+Flat + overlay **insulates** the index from complexity. Parent/child does the
+opposite — it pulls relational structure *into* the index, where it compounds (more
+joins, more re-indexing, more query-time cost) and still can't model the
+relationships that actually matter, like pricing. **More complexity is an argument
+*for* the layered flat design, not against it.**
+
+---
+
+## Subnotes — the reproducible numbers and the honest trade-offs
+
+The two things that are **exact and reproducible**:
+
+| | Flat | Parent/child | |
 | --- | --- | --- | --- |
-| size on disk | 517 MB | 391 MB | **join −24%** |
-| indexing speed | 43.7k/s | 45.8k/s | **join ~5% faster** |
-| change one car model | re-index all its listings | edit one record | **join simpler** |
-| shard balance | even (1.00) | skewed (1.11) | flat |
-| memory (global ordinals) | none | grows with the catalog | flat |
+| storage on disk | ~510 MB | ~385 MB | **join −24%** |
+| result counts (Search 2 ladder) | 2,000,000 → 10,586 | identical | exact both ways |
 
-- **Storage / indexing** favor parent/child because child docs drop the repeated car
-  fields — but disk is the cheapest resource, traded here to lose 13.5× on the hot
-  query and ~7× on facets.
-- **Updates**: changing a car attribute is one edit on parent/child vs a re-index of
-  every matching listing on flat. Only matters if car attributes churn — here
+Where parent/child genuinely wins (the honest trade-off):
+- **Storage / indexing** — child docs drop the repeated car fields, so the index is
+  ~24% smaller and ingests a touch faster. Disk is the cheapest resource.
+- **Updates** — changing a car attribute is one edit on parent/child vs re-indexing
+  every matching listing on flat. Only matters if car attributes churn; here
   `make`/`class`/`seats` are effectively static.
-- **Shard balance**: children are routed to their parent's shard, so shard sizes
-  track model popularity (1.11 skew) rather than an even hash (1.00). Hot-shard risk,
-  weaker scale-out.
-- **Memory**: the join field loads global ordinals into heap, growing with catalog
-  size — a liability flat never has.
-- **Query shape**: every car-attribute filter, sort, or facet on parent/child needs a
-  `has_parent`/`has_child` wrapper (and `inner_hits` to return car fields with a
-  listing); on flat these are ordinary `term`/`range`/`terms` clauses.
+
+Where flat wins (beyond read latency, which we don't quote precisely):
+- **Query shape** — plain `term`/`range`/`terms` vs `has_parent`/`children`/
+  `inner_hits`.
+- **Shard balance** — flat hashes evenly; parent/child routes children to their
+  parent's shard, so shard sizes track model popularity (skew, hot-shard risk).
+- **Heap** — the join field loads global ordinals into heap, growing with the
+  catalog; flat has no such cost.
 
 ## Reproduce
 
 ```bash
-docker compose up -d && python scripts/wait_for_opensearch.py
-python scripts/bench_generate_ingest.py --target 2000000   # builds bench_flat + bench_join (~80s)
-python scripts/bench_run.py --iterations 30                 # read-latency ladder  -> scripts/bench_results.json
-python scripts/bench_dimensions.py --index-sample 500000    # agg/memory/skew/indexing -> scripts/bench_dimensions.json
+docker compose up -d && python scripts/wait_for_opensearch.py   # OS_HEAP=4g recommended
+python scripts/bench_generate_ingest.py --target 2000000        # builds bench_flat + bench_join
+python scripts/bench_run.py                                     # storage + result counts (the reliable numbers)
 ```
+
+> For trustworthy *latency* figures you'd need a controlled, properly-sized cluster
+> averaged over many runs — not a single-node laptop, where the measurement noise
+> exceeds the flat-vs-join difference.
