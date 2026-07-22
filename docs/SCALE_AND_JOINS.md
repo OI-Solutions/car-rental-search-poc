@@ -25,14 +25,21 @@ its tests never touch `bench_*`.
 
 ## The data: from 5,851 real cars to 2,000,000
 
-We started with a real dataset from Kaggle — **5,851 actual car rentals** (the
+**What we started with:** 5,851 real car rentals from Kaggle (the
 [Cornell set](https://www.kaggle.com/datasets/kushleshkumar/cornell-car-rental-dataset)).
-Each one is a car offered for rent: its make, model, type, daily price, and city.
+Each row is one car — its make, model and type, daily price, and city.
 
-That's too few to feel like searching through millions, so we made more from it: we
-kept the same **547 real car models**, spread them across **~6,000 rental locations**
-in **~960 cities**, and built **2,000,000 listings** — each a real car at a location,
-with its price, year, and stock count varied a little so they're not all the same.
+**How the script (`bench_generate_ingest.py`) turns that into 2,000,000:**
+
+1. Pull out the **547 distinct car models**, and note each model's average real price.
+2. List the **1,017 cities**, and how busy each one was.
+3. Make **2,000,000 listings**. Each one = a random car model, dropped in a city
+   (busier cities more often) at one of 6 branch locations, priced at that model's
+   average ±30%, with a random year (2006–2020) and stock count (0–5).
+
+So it's **not** one car per location — it's 2,000,000 random mixes of a real car, a
+real city, and a realistic price, spreading the 547 models across **~6,000 locations
+in 964 cities**.
 
 | | we started with | we ended up with |
 | --- | --- | --- |
@@ -42,7 +49,7 @@ with its price, year, and stock count varied a little so they're not all the sam
 | cities | 1,017 | 964 |
 | daily price | \$20–\$1,500 | \$15–\$1,539 (avg \$116) |
 
-Rebuild it any time with `scripts/bench_generate_ingest.py --target 2000000`.
+Rebuild it any time with `python scripts/bench_generate_ingest.py --target 2000000`.
 
 ## The two ways to store it
 
@@ -133,16 +140,13 @@ join is never cheaper — 1.6× even fully filtered.
 
 ### 2. Aggregation / faceting (6.7×, and it takes 5 queries)
 
-**Walk it through.** Picture the sidebar count a user expects: *how many available
-vehicles of each type — car, SUV, minivan, truck, van?*
+**For example:** a user wants a count for each type — car, SUV, minivan, truck, van.
 
-- **Flat — you ask once.** Every listing already carries its own `vehicle_class`, so
-  OpenSearch groups all 2,000,000 rows by class and sums the available quantity in a
-  single pass. **≈ 9 ms, 1 query.**
-- **Parent/child — you ask five times.** The class lives on the *parent* record, so
-  the listings can't be grouped by it in one go. You ask class by class — "how many
-  available cars?", then SUVs, minivans, trucks, vans — each a `has_parent` join —
-  then add the five answers together yourself. **≈ 60 ms, 5 queries.**
+- **Flat — one query.** Every listing already has its type, so OpenSearch counts them
+  all and groups by type in a single pass. **≈ 9 ms.**
+- **Parent/child — five queries.** The type is on the separate car record, not the
+  listing, so you ask once per type — cars, then SUVs, minivans, trucks, vans (each a
+  `has_parent` join) — and add up the five answers. **≈ 60 ms.**
 
 ```json
 // flat — one query, one pass
