@@ -129,27 +129,32 @@ never cheaper.
 
 ### Search 3: cheapest rate for each type
 
-A filter panel wants the lowest price per type. Flat groups every listing by type and
-takes the minimum in one query. Parent/child can't group by type (it's on the car
-record), so you ask once per type and combine.
+A filter panel wants the lowest price per type. On the flat layout it's one plain
+aggregation — group listings by their own type, take the min. On parent/child the
+type lives on the car record, not the listing, so the aggregation has to cross the
+join. It **can** still be one query — the `children` aggregation buckets the car
+records by type, then descends to their listings for the min — but it pays the join
+tax either way.
 
 ```json
-// FLAT — one query
+// FLAT — group listings by their own type
 { "size": 0, "aggs": { "by_type": {
     "terms": { "field": "vehicle_class" },
     "aggs": { "cheapest": { "min": { "field": "base_daily_rate" } } } } } }
 ```
 ```json
-// PARENT/CHILD — repeat once per type (car, suv, minivan, truck, van), then keep the lowest per type
-{ "size": 0,
-  "query": { "has_parent": { "parent_type": "vehicle_model",
-                             "query": { "term": { "vehicle_class": "suv" } } } },
-  "aggs": { "cheapest": { "min": { "field": "base_daily_rate" } } } }
+// PARENT/CHILD — one query, but it crosses the join: bucket car records by type, descend to their listings
+{ "size": 0, "aggs": { "by_type": {
+    "terms": { "field": "vehicle_class" },
+    "aggs": { "listings": { "children": { "type": "inventory" },
+      "aggs": { "cheapest": { "min": { "field": "base_daily_rate" } } } } } } } }
 ```
 
-**120 ms (1 query) vs 784 ms (5 queries) — ~6.5× slower, and five round trips instead
-of one.** (Answer either way: cheapest car \$15, SUV \$22, minivan \$24, truck \$25,
-van \$25.)
+Same answer either way (cheapest car \$15, SUV \$22, minivan \$24, truck \$25, van
+\$25), but crossing the join costs **~7× more** (≈10 ms flat vs ≈70 ms). And it's the
+*join* that costs, not the query count — writing it as five `has_parent` queries (one
+per type) lands in the same ballpark (≈58 ms). Flat never crosses a join, because the
+type is already on the listing.
 
 ---
 
@@ -168,7 +173,7 @@ cheapest, least-frequent costs), and loses on a couple more operational dimensio
 
 - **Storage / indexing** favor parent/child because child docs drop the repeated car
   fields — but disk is the cheapest resource, traded here to lose 13.5× on the hot
-  query and ~6.5× on facets.
+  query and ~7× on facets.
 - **Updates**: changing a car attribute is one edit on parent/child vs a re-index of
   every matching listing on flat. Only matters if car attributes churn — here
   `make`/`class`/`seats` are effectively static.
