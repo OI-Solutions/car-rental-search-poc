@@ -31,11 +31,11 @@ like: *Tesla Model X · SUV · 2019 · \$135/day · Seattle, WA*.
    (busier cities more often) at one of 6 branch locations, priced at that model's
    average ±30%, with a random year (2006–2020) and stock count (0–5).
 
-So it's **not** one car per location — it's 2,000,000 random mixes of a real car, a
+It's 2,000,000 random mixes of a real car, a
 real city, and a realistic price, spreading the 547 models across **~6,000 locations
 in 964 cities**.
 
-| | we started with | we ended up with |
+| | Cornell set | expansion |
 | --- | --- | --- |
 | car listings | 5,851 | **2,000,000** |
 | car models | 547 | 547 |
