@@ -23,49 +23,43 @@ Seeded from the real [Cornell dataset](https://www.kaggle.com/datasets/kushleshk
 **local single-node cluster** (`docker compose up`), not the fixture. The app and
 its tests never touch `bench_*`.
 
-## The data: 5,851 real listings, expanded to 2,000,000
+## The data: from 5,851 real cars to 2,000,000
 
-**Seed — real.** The [Cornell dataset](https://www.kaggle.com/datasets/kushleshkumar/cornell-car-rental-dataset)
-is **5,851 real car-rental listings** across **1,017 US metros**, covering **547
-distinct vehicle models** (make / model / type) with real daily rates. Each row is
-one real vehicle someone listed for rent.
+We started with a real dataset from Kaggle — **5,851 actual car rentals** (the
+[Cornell set](https://www.kaggle.com/datasets/kushleshkumar/cornell-car-rental-dataset)).
+Each one is a car offered for rent: its make, model, type, daily price, and city.
 
-**Why expand.** 5,851 rows can't show how filters prune "millions," or how a join
-behaves at scale — so the corpus is grown to **2,000,000 rows (~342×)**,
-deterministically (fixed seed) and seeded from the real distributions so the catalog
-and geography stay realistic:
+That's too few to feel like searching through millions, so we made more from it: we
+kept the same **547 real car models**, spread them across **~6,000 rental locations**
+in **~960 cities**, and built **2,000,000 listings** — each a real car at a location,
+with its price, year, and stock count varied a little so they're not all the same.
 
-- The **547 real models** are kept as the catalog (and become the join parents).
-- **Metros become dealerships:** each metro is sampled in proportion to its real
-  listing density and split into up to 6 fictional branch locations → **~5,996
-  dealerships** spread across **964 metros**.
-- **Each of the 2,000,000 rows** places a real model at a sampled dealership and
-  varies the rest deterministically: the daily rate jittered around that model's
-  real average (**\$15–\$1,539, avg \$116**), a model **year (2006–2020)**, a small
-  on-hand quantity, a status, and a recent update date.
-
-| | seed (real) | expanded |
+| | we started with | we ended up with |
 | --- | --- | --- |
-| inventory rows | 5,851 | **2,000,000** |
-| vehicle models | 547 | 547 |
-| dealerships | — (individual owners) | 5,996 |
-| metros | 1,017 | 964 |
-| daily rate | \$20–\$1,500 | \$15–\$1,539 (avg \$116) |
-| index size | — | 517 MB flat · 391 MB join |
+| car listings | 5,851 | **2,000,000** |
+| car models | 547 | 547 |
+| rental locations | individual owners | 5,996 |
+| cities | 1,017 | 964 |
+| daily price | \$20–\$1,500 | \$15–\$1,539 (avg \$116) |
 
-Real vehicle catalog, real geography, synthetic volume — reproducible via
-`scripts/bench_generate_ingest.py --target 2000000`.
+Rebuild it any time with `scripts/bench_generate_ingest.py --target 2000000`.
 
-## The example documents (the whole difference in two records)
+## The two ways to store it
 
-Each record is **one vehicle offered at one dealership**. The flat version keeps
-that whole listing in a single document — the dealership and city it's at, and what
-the vehicle actually is (make, model, class, seats) — all in one place. The
-parent/child version pulls the vehicle's details out into a separate "parent"
-record and leaves the listing holding only a pointer to it, so anything asking about
-the vehicle itself has to look in two places.
+Both indexes hold the same 2,000,000 cars and give the same answers. Only the
+storage differs:
 
-**Flat** — one self-contained doc; model attributes (`make`…`transmission`) are inline:
+| | Flat | Parent/child |
+| --- | --- | --- |
+| documents stored | 2,000,000 | 2,000,547 |
+| car details (make, model, type, seats) | on every listing | in one separate record |
+| listing details (city, price, stock) | on the listing | on the listing |
+| to filter by car type | read the listing | join to the car record |
+| size on disk | 517 MB | 391 MB |
+
+The same car, stored both ways —
+
+**Flat** — one document holds the whole listing:
 
 ```json
 {
@@ -76,7 +70,7 @@ the vehicle itself has to look in two places.
 }
 ```
 
-**Parent/child** — the model fields move to a parent; the child keeps only a pointer:
+**Parent/child** — the car's details sit in a separate record; the listing points to it:
 
 ```json
 // parent doc  (_id = routing = vehicle_model_id)
